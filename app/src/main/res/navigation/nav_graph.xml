@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_navigation_favorites_to_mapFragment"
             app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_navigation_favorites_to_navigation_home"
+            app:destination="@id/navigation_home" />
     </fragment>
 
     <fragment
@@ -35,7 +38,7 @@
         android:id="@+id/navigation_preferences"
         android:name="com.example.weathermate.initial_preferences.PreferencesFragment"
         android:label="@string/title_preferences"
-        tools:layout="@layout/fragment_preferences" >
+        tools:layout="@layout/fragment_initial_preferences" >
         <action
             android:id="@+id/action_preferencesFragment_to_navigation_home"
             app:destination="@id/navigation_home" />
@@ -51,6 +54,15 @@
     <fragment
         android:id="@+id/mapFragment"
         android:name="com.example.weathermate.map.MapFragment"
-        android:label="MapFragment" />
+        android:label="MapFragment" >
+        <argument
+            android:name="isFromSettings"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="isFromFavorites"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
 
 </navigation>

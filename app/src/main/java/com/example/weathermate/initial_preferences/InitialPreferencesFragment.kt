@@ -27,10 +27,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weathermate.MyApp
 import com.example.weathermate.R
-import com.example.weathermate.databinding.FragmentPreferencesBinding
-import com.example.weathermate.network.ApiService
-import com.example.weathermate.network.RetrofitHelper
+import com.example.weathermate.databinding.FragmentInitialPreferencesBinding
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -47,7 +46,7 @@ class PreferencesFragment : Fragment() {
 
     private val TAG = "commonnn"
 
-    lateinit var binding: FragmentPreferencesBinding
+    lateinit var binding: FragmentInitialPreferencesBinding
 
     lateinit var mfusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var myMap: GoogleMap
@@ -66,7 +65,7 @@ class PreferencesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        binding = FragmentPreferencesBinding.inflate(inflater, container, false)
+        binding = FragmentInitialPreferencesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -332,12 +331,8 @@ class PreferencesFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val apiKey = resources.getString(R.string.google_maps_key)
-                val retrofit =
-                    RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_MAP_AUTOCOMPLETE)
-                val service = retrofit.create(ApiService::class.java)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val mapsAutoCompleteResponse = service.getMapsAutoCompleteResponse(apiKey, s)
+                    val mapsAutoCompleteResponse = MyApp.getInstanceRemoteDataSource().getMapsAutoCompleteResponse(s)
                     val predictions = mapsAutoCompleteResponse.predictions
                     val suggestions = mutableListOf<String>()
                     for (i in 0 until predictions.size) {
@@ -345,8 +340,8 @@ class PreferencesFragment : Fragment() {
                     }
                     withContext(Dispatchers.Main) {
                         binding.rvSearchSuggestions.adapter =
-                            SearchSuggestionAdapter(suggestions, object : OnItemClickPersonal {
-                                override fun onItemClickPersonal(suggestionSelected: String) {
+                            SearchSuggestionAdapter(suggestions, object : OnItemClickInitialPreferences {
+                                override fun onItemClickInitialPreferences(suggestionSelected: String) {
                                     Log.i(TAG, "onItemClickPersonal: $suggestionSelected")
                                     binding.etSearchMap.text = Editable.Factory.getInstance()
                                         .newEditable(suggestionSelected)
@@ -422,7 +417,7 @@ class PreferencesFragment : Fragment() {
     private fun activateSearchIconListener() {
         binding.imgSearchIcon.setOnClickListener {
             setUpMapUsingLocationString(binding.etSearchMap.text.toString())
-            binding.rvSearchSuggestions.adapter = SearchSuggestionAdapter(mutableListOf() , object : OnItemClickPersonal{})
+            binding.rvSearchSuggestions.adapter = SearchSuggestionAdapter(mutableListOf() , object : OnItemClickInitialPreferences{})
         }
 
     }

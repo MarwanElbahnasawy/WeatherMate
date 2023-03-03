@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.weathermate.R
 import com.example.weathermate.databinding.ItemHourlyForecastBinding
 import com.example.weathermate.model.Hourly
 import com.example.weathermate.util.Constants
@@ -19,9 +18,8 @@ import java.util.*
 
 class HourlyAdapter() : ListAdapter<Hourly, HourlyAdapter.HourlyViewHolder>(HourlyDiffUtil()) {
 
-    private var context: Context? = null
-    lateinit var binding: ItemHourlyForecastBinding
-    lateinit var preferenceManager: SharedPreferences
+    class HourlyViewHolder(val binding: ItemHourlyForecastBinding) :
+        RecyclerView.ViewHolder(binding.root) {}
 
     class HourlyDiffUtil : DiffUtil.ItemCallback<Hourly>() {
         override fun areItemsTheSame(oldItem: Hourly, newItem: Hourly): Boolean {
@@ -34,10 +32,16 @@ class HourlyAdapter() : ListAdapter<Hourly, HourlyAdapter.HourlyViewHolder>(Hour
 
     }
 
+    private var context: Context? = null
+    lateinit var binding: ItemHourlyForecastBinding
+    lateinit var sharedPreferences: SharedPreferences
+
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyViewHolder {
         context = parent.context
-        preferenceManager = PreferenceManager.getDefaultSharedPreferences(context!!)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context!!)
         val inflater: LayoutInflater =
             parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = ItemHourlyForecastBinding.inflate(inflater, parent, false)
@@ -57,11 +61,11 @@ class HourlyAdapter() : ListAdapter<Hourly, HourlyAdapter.HourlyViewHolder>(Hour
             .into(holder.binding.hourIconImageView)
 
         var tempInKelvinByDefault = current.temp
-        if (preferenceManager.getString("temperature_unit", null).equals("celsius")) {
+        if (sharedPreferences.getString("temperature_unit", null).equals("celsius")) {
             tempInKelvinByDefault = UnitsConverter.kelvinToCelsius(tempInKelvinByDefault)
             holder.binding.hourTemperatureTextView.text =
                 tempInKelvinByDefault.toInt().toString() + " C"
-        } else if (preferenceManager.getString("temperature_unit", null).equals("fahrenheit")) {
+        } else if (sharedPreferences.getString("temperature_unit", null).equals("fahrenheit")) {
             tempInKelvinByDefault = UnitsConverter.kelvinToFahrenheit(tempInKelvinByDefault)
             holder.binding.hourTemperatureTextView.text =
                 tempInKelvinByDefault.toInt().toString() + " F"
@@ -73,7 +77,6 @@ class HourlyAdapter() : ListAdapter<Hourly, HourlyAdapter.HourlyViewHolder>(Hour
 
     }
 
-    class HourlyViewHolder(val binding: ItemHourlyForecastBinding) :
-        RecyclerView.ViewHolder(binding.root) {}
+
 
 }

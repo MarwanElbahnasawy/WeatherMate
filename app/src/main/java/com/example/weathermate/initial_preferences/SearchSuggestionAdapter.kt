@@ -9,7 +9,7 @@ import com.example.weathermate.R
 
 class SearchSuggestionAdapter(
     private val suggestions: MutableList<String>,
-    private val onItemClickPersonal: OnItemClickPersonal
+    private val onItemClickInitialPreferences: OnItemClickInitialPreferences
 ) : RecyclerView.Adapter<SearchSuggestionAdapter.ViewHolder>() {
 
 
@@ -28,7 +28,7 @@ class SearchSuggestionAdapter(
         val suggestion = suggestions[position]
         holder.suggestionTextView.text = suggestion
         holder.itemView.setOnClickListener {
-            onItemClickPersonal.onItemClickPersonal(suggestion)
+            onItemClickInitialPreferences.onItemClickInitialPreferences(suggestion)
             suggestions.clear()
             notifyDataSetChanged()
         }

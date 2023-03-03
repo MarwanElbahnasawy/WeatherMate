@@ -6,15 +6,12 @@ import android.content.Context.LOCATION_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,20 +19,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weathermate.databinding.FragmentSettingsBinding
-import com.example.weathermate.initial_preferences.OnItemClickPersonal
 import com.example.weathermate.initial_preferences.PERMISSION_LOCATION_ID
-import com.example.weathermate.initial_preferences.SearchSuggestionAdapter
-import com.example.weathermate.network.ApiService
-import com.example.weathermate.network.RetrofitHelper
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.*
@@ -54,12 +44,7 @@ class SettingsFragment : Fragment() {
     private var latitudeDouble: Double = 0.0
 
     lateinit var sharedPreferences: SharedPreferences
-    lateinit var sharedPreferencesEditor :  SharedPreferences.Editor
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    lateinit var sharedPreferencesEditor: SharedPreferences.Editor
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,8 +72,6 @@ class SettingsFragment : Fragment() {
         activateLocationClickListener()
 
     }
-
-
 
 
     private fun initFrag() {
@@ -120,7 +103,6 @@ class SettingsFragment : Fragment() {
             binding.rbKph.isChecked = true
         }
     }
-
 
 
     @SuppressLint("MissingPermission")
@@ -287,7 +269,7 @@ class SettingsFragment : Fragment() {
             getLastLocation()
         }
         binding.rbMap.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionNavigationSettingsToMapFragment())
+            findNavController().navigate(SettingsFragmentDirections.actionNavigationSettingsToMapFragment(isFromSettings = true))
         }
     }
 

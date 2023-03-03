@@ -1,4 +1,4 @@
-package com.example.weathermate.network
+package com.example.weathermate.repository.remote
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

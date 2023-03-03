@@ -16,13 +16,12 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentHomeBinding
 import com.example.weathermate.model.Daily
 import com.example.weathermate.model.Hourly
 import com.example.weathermate.model.WeatherData
-import com.example.weathermate.network.ApiService
-import com.example.weathermate.network.RetrofitHelper
 import com.example.weathermate.util.Constants
 import com.example.weathermate.util.UnitsConverter
 import kotlinx.coroutines.Dispatchers
@@ -42,10 +41,8 @@ class HomeFragment : Fragment() {
 
     lateinit var sharedPreferences: SharedPreferences
 
-    lateinit var hourlyRecyclerView: RecyclerView
     lateinit var hourlyRecyclerAdapter: HourlyAdapter
 
-    lateinit var dailyRecyclerView: RecyclerView
     lateinit var dailyRecyclerAdapter: DailyAdapter
 
 
@@ -67,8 +64,6 @@ class HomeFragment : Fragment() {
 
             setLatitudeAndLongitude()
 
-
-            initFrag(view)
 
 
 
@@ -97,38 +92,23 @@ class HomeFragment : Fragment() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
     }
 
-    private fun initFrag(view: View) {
-        hourlyRecyclerView = view.findViewById(R.id.recyclerViewHourlyForecast)
-        dailyRecyclerView = view.findViewById(R.id.recyclerViewDailyForecast)
-
-        Log.i(TAG, "initFrag: " + sharedPreferences.getBoolean("preferences_set", false))
-
-    }
 
     private fun getWeatherData() {
-        val retrofit = RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_WEATHER)
-        val service = retrofit.create(ApiService::class.java)
         lifecycleScope.launch(Dispatchers.IO) {
             var weatherData: WeatherData
             if (sharedPreferences.getString("language", null).equals("english")) {
                 Log.i(TAG, "getWeatherData: ++++++++++++english" )
                 Log.i(TAG, "getWeatherData: " + latitudeDouble.toString())
                 Log.i(TAG, "getWeatherData: " + longitudeDouble.toString())
-                weatherData = service.getWeatherData(
-                    getString(R.string.openweathermap_key),
-                    latitudeDouble,
+                weatherData = MyApp.getInstanceRemoteDataSource().getWeatherData(latitudeDouble,
                     longitudeDouble,
-                    "en"
-                )
+                    "en")
                 Log.i(TAG, "getWeatherData: after english call")
             } else {
                 Log.i(TAG, "getWeatherData: ++++++++++++arabbic" )
-                weatherData = service.getWeatherData(
-                    getString(R.string.openweathermap_key),
-                    latitudeDouble,
+                weatherData = MyApp.getInstanceRemoteDataSource().getWeatherData(latitudeDouble,
                     longitudeDouble,
-                    "ar"
-                )
+                    "ar")
             }
 
             withContext(Dispatchers.Main) {
@@ -215,7 +195,7 @@ class HomeFragment : Fragment() {
 
         hourlyRecyclerAdapter = HourlyAdapter()
 
-        hourlyRecyclerView.apply {
+        binding.recyclerViewHourlyForecast.apply {
             layoutManager = mlayoutManager
             adapter = hourlyRecyclerAdapter
         }
@@ -227,10 +207,15 @@ class HomeFragment : Fragment() {
 
     private fun setupDailyAdapter(dailyList: List<Daily>) {
         val mlayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        dailyRecyclerView.layoutManager = mlayoutManager
-        dailyRecyclerAdapter = DailyAdapter(dailyList)
 
-        dailyRecyclerView.adapter = dailyRecyclerAdapter
+        dailyRecyclerAdapter = DailyAdapter()
+
+        binding.recyclerViewDailyForecast.apply {
+            layoutManager = mlayoutManager
+            adapter = dailyRecyclerAdapter
+        }
+
+        dailyRecyclerAdapter.submitList(dailyList)
     }
 
     private fun setLatitudeAndLongitude() {

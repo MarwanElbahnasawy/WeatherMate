@@ -1,6 +1,7 @@
-package com.example.weathermate.network
+package com.example.weathermate.repository.remote
 
 import com.example.weathermate.model.WeatherData
+import com.example.weathermate.network.MapsAutoCompleteResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

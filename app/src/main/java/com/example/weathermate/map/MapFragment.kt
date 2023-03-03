@@ -23,15 +23,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentMapBinding
-import com.example.weathermate.initial_preferences.OnItemClickPersonal
+import com.example.weathermate.initial_preferences.OnItemClickInitialPreferences
 import com.example.weathermate.initial_preferences.PERMISSION_LOCATION_ID
 import com.example.weathermate.initial_preferences.SearchSuggestionAdapter
-import com.example.weathermate.network.ApiService
-import com.example.weathermate.network.RetrofitHelper
+import com.example.weathermate.model.FavoriteAddress
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -52,16 +53,15 @@ class MapFragment : Fragment() {
 
     lateinit var mfusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var myMap: GoogleMap
+
     private var longitudeDouble: Double = 0.0
     private var latitudeDouble: Double = 0.0
+    private var myAddress : String = ""
 
     lateinit var sharedPreferences: SharedPreferences
     lateinit var sharedPreferencesEditor :  SharedPreferences.Editor
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var isLocationChosenOnMap = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,7 +94,11 @@ class MapFragment : Fragment() {
 
         activateClearSearchIconListener()
 
+        activateAddToFavoritesListener()
+
     }
+
+
 
 
     private fun initFrag() {
@@ -102,7 +106,10 @@ class MapFragment : Fragment() {
         sharedPreferencesEditor = sharedPreferences.edit()
 
         latitudeDouble = sharedPreferences.getString("latitude", null)?.toDouble() ?: 0.0
-        latitudeDouble = sharedPreferences.getString("longitude", null)?.toDouble() ?: 0.0
+        longitudeDouble = sharedPreferences.getString("longitude", null)?.toDouble() ?: 0.0
+        if (latitudeDouble != 0.0){
+            setMyAddressFromLatAndLon(latitudeDouble,longitudeDouble)
+        }
     }
 
     private fun initializeMapFragment() {
@@ -192,10 +199,15 @@ class MapFragment : Fragment() {
 
     private val mlocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
+
+            isLocationChosenOnMap = true
+
             Log.i(TAG, "onLocationResult: called")
             val mLastLocation: Location = locationResult.lastLocation
             longitudeDouble = mLastLocation.longitude
             latitudeDouble = mLastLocation.latitude
+
+            setMyAddressFromLatAndLon(latitudeDouble, longitudeDouble)
 
             mfusedLocationProviderClient.removeLocationUpdates(this)
 
@@ -212,8 +224,13 @@ class MapFragment : Fragment() {
 
 
     private fun setUpMapOnClick(latLng: LatLng) {
+
+        isLocationChosenOnMap = true
+
         latitudeDouble = latLng.latitude
         longitudeDouble = latLng.longitude
+
+        setMyAddressFromLatAndLon(latitudeDouble, longitudeDouble)
 
         moveMapWithLatAndLon(latitudeDouble , longitudeDouble)
 
@@ -238,12 +255,8 @@ class MapFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val apiKey = resources.getString(R.string.google_maps_key)
-                val retrofit =
-                    RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_MAP_AUTOCOMPLETE)
-                val service = retrofit.create(ApiService::class.java)
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val mapsAutoCompleteResponse = service.getMapsAutoCompleteResponse(apiKey, s)
+                    val mapsAutoCompleteResponse = MyApp.getInstanceRemoteDataSource().getMapsAutoCompleteResponse(s)
                     val predictions = mapsAutoCompleteResponse.predictions
                     val suggestions = mutableListOf<String>()
                     for (i in 0 until predictions.size) {
@@ -251,8 +264,8 @@ class MapFragment : Fragment() {
                     }
                     withContext(Dispatchers.Main) {
                         binding.rvSearchSuggestions.adapter =
-                            SearchSuggestionAdapter(suggestions, object : OnItemClickPersonal {
-                                override fun onItemClickPersonal(suggestionSelected: String) {
+                            SearchSuggestionAdapter(suggestions, object : OnItemClickInitialPreferences {
+                                override fun onItemClickInitialPreferences(suggestionSelected: String) {
                                     Log.i(TAG, "onItemClickPersonal: $suggestionSelected")
                                     binding.etSearchMap.text = Editable.Factory.getInstance()
                                         .newEditable(suggestionSelected)
@@ -272,6 +285,9 @@ class MapFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun setUpMapUsingLocationString(locationName: String) {
+
+        isLocationChosenOnMap = true
+
         Log.i(TAG, "setUpMapUsingLocationString: called")
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         if (isAdded) {
@@ -280,6 +296,9 @@ class MapFragment : Fragment() {
                 if (addresses.isNotEmpty()) {
                     latitudeDouble = addresses[0].latitude
                     longitudeDouble = addresses[0].longitude
+
+                    setMyAddressFromLatAndLon(latitudeDouble, longitudeDouble)
+
                     Log.i(TAG, "setUpMapUsingLocationString: " + latitudeDouble)
                     Log.i(TAG, "setUpMapUsingLocationString: " + longitudeDouble)
                     val latLng = LatLng(latitudeDouble, longitudeDouble)
@@ -315,6 +334,18 @@ class MapFragment : Fragment() {
         sharedPreferencesEditor.apply()
     }
 
+    private fun setMyAddressFromLatAndLon(latitude: Double, longitude: Double){
+        Log.i(TAG, "setMyAddressFromLatAndLon: $latitude $longitude")
+        val geocoder = Geocoder(requireContext())
+        val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+        if (addresses != null) {
+            val address = addresses[0]
+            val addressName =
+                address.locality ?: address.subAdminArea ?: address.adminArea
+            myAddress = addressName
+        }
+    }
+
     private fun activateImgCurrentLocation() {
         binding.imgCurrentLocation.setOnClickListener {
             if(isLocationEnabled()){
@@ -332,7 +363,8 @@ class MapFragment : Fragment() {
         binding.imgSearchIcon.setOnClickListener {
             if(binding.etSearchMap.text.isNotBlank()){
                 setUpMapUsingLocationString(binding.etSearchMap.text.toString())
-                binding.rvSearchSuggestions.adapter = SearchSuggestionAdapter(mutableListOf() , object : OnItemClickPersonal{})
+                binding.rvSearchSuggestions.adapter = SearchSuggestionAdapter(mutableListOf() , object : OnItemClickInitialPreferences{})
+                isLocationChosenOnMap = true
 
             }
          }
@@ -343,6 +375,33 @@ class MapFragment : Fragment() {
     private fun activateClearSearchIconListener() {
         binding.imgClearSearch.setOnClickListener {
             binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
+        }
+    }
+
+    private fun activateAddToFavoritesListener() {
+        val args: MapFragmentArgs by navArgs()
+        if(args.isFromFavorites){
+            arguments?.putBoolean("isFromFavorites" , false)
+            binding.btnAddToFavorites.visibility = View.VISIBLE
+            binding.btnAddToFavorites.setOnClickListener {
+                if (isLocationChosenOnMap){
+                    isLocationChosenOnMap = false
+                    lifecycleScope.launch {
+                        MyApp.getInstanceLocalDataSource().insertFavoriteAddress(FavoriteAddress(
+                            address = myAddress,
+                            latitude = latitudeDouble,
+                            longitude = longitudeDouble,
+                            latlon = (latitudeDouble.toString()+longitudeDouble.toString())
+                        ))
+                    }
+
+                }
+            }
+
+        } else if (args.isFromSettings){
+            arguments?.putBoolean("isFromSettings" , false)
+            binding.btnAddToFavorites.visibility = View.GONE
+
         }
     }
 
