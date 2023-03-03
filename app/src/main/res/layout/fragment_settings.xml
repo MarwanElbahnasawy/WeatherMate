@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/language"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewDummy" />
+
+    <RadioGroup
+        android:id="@+id/rg_language"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toEndOf="@+id/tv_language"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewDummy">
+
+        <RadioButton
+            android:id="@+id/rb_english"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/english" />
+
+        <RadioButton
+            android:id="@+id/rb_arabic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="@string/arabic" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tv_temp_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/temperature_unit"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="@+id/tv_language"
+        app:layout_constraintTop_toBottomOf="@+id/tv_language" />
+
+    <RadioGroup
+        android:id="@+id/rg_temp_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/rg_language"
+        app:layout_constraintTop_toBottomOf="@+id/rg_language">
+
+        <RadioButton
+            android:id="@+id/rb_celsius"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/celsius" />
+
+        <RadioButton
+            android:id="@+id/rb_fahrenheit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fahrenheit" />
+
+        <RadioButton
+            android:id="@+id/rb_kelvin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kelvin" />
+
+    </RadioGroup>
+
+
+    <TextView
+        android:id="@+id/tv_wind_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/wind_unit"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="@+id/tv_temp_unit"
+        app:layout_constraintTop_toBottomOf="@+id/tv_temp_unit" />
+
+    <RadioGroup
+        android:id="@+id/rg_wind_unit"
+        android:layout_width="176dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/rg_temp_unit"
+        app:layout_constraintTop_toBottomOf="@+id/rg_temp_unit">
+
+        <RadioButton
+            android:id="@+id/rb_mph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/mph" />
+
+        <RadioButton
+            android:id="@+id/rb_kph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/kph" />
+
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/tv_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/location"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="@+id/tv_wind_unit"
+        app:layout_constraintTop_toBottomOf="@+id/tv_wind_unit" />
+
+    <RadioGroup
+        android:id="@+id/rg_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/rg_wind_unit"
+        app:layout_constraintTop_toBottomOf="@+id/rg_wind_unit">
+
+        <RadioButton
+            android:id="@+id/rb_gps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gps" />
+
+        <RadioButton
+            android:id="@+id/rb_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:text="@string/map" />
+
+    </RadioGroup>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

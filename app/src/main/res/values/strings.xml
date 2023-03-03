@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">WeatherMate</string>
+    <string name="title_home">Home</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="title_alerts">Alerts</string>
+    <string name="title_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="save">Save</string>
+    <string name="fahrenheit">Fahrenheit</string>
+    <string name="celsius">Celsius</string>
+    <string name="language">Language</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
+    <string name="wind_unit">Wind</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="title_preferences">Preferences</string>
+    <string name="temperature_unit">Temperature</string>
+    <string name="location">Location</string>
+    <string name="gps">GPS</string>
+    <string name="map">Map</string>
+    <string name="search_map">Search for a location</string>
+    <string name="google_maps_key">AIzaSyATC4Zk0_xofsFUTm0GRIyNej3syHx5oro</string>
+    <string name="openweathermap_key">f112a761188e9c22cdf3eb3a44597b00</string>
+    <string name="kelvin">Kelvin</string>
 </resources>
