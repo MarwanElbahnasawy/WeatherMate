@@ -100,13 +100,13 @@ class HomeFragment : Fragment() {
                 Log.i(TAG, "getWeatherData: ++++++++++++english" )
                 Log.i(TAG, "getWeatherData: " + latitudeDouble.toString())
                 Log.i(TAG, "getWeatherData: " + longitudeDouble.toString())
-                weatherData = MyApp.getInstanceRemoteDataSource().getWeatherData(latitudeDouble,
+                weatherData = MyApp.getInstanceRepository().getWeatherData(latitudeDouble,
                     longitudeDouble,
                     "en")
                 Log.i(TAG, "getWeatherData: after english call")
             } else {
                 Log.i(TAG, "getWeatherData: ++++++++++++arabbic" )
-                weatherData = MyApp.getInstanceRemoteDataSource().getWeatherData(latitudeDouble,
+                weatherData = MyApp.getInstanceRepository().getWeatherData(latitudeDouble,
                     longitudeDouble,
                     "ar")
             }
@@ -127,7 +127,7 @@ class HomeFragment : Fragment() {
                 }
 
 
-                val date = Date(weatherData.current.dt * 1000L)  // converts seconds to milliseconds
+                val date = Date(weatherData.current.dt * 1000L)
                 val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 format.timeZone = TimeZone.getTimeZone("GMT+2")
                 binding.textViewCurrentDateTime.text = format.format(date)

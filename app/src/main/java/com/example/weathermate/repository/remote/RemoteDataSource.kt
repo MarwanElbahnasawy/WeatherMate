@@ -2,6 +2,7 @@ package com.example.weathermate.repository.remote
 
 import android.content.Context
 import com.example.weathermate.R
+import com.example.weathermate.model.Alert
 import com.example.weathermate.model.WeatherData
 import com.example.weathermate.network.MapsAutoCompleteResponse
 
@@ -28,6 +29,11 @@ class RemoteDataSource private constructor(context: Context) {
 
     suspend fun getWeatherData(lat: Double, lon: Double, language: String): WeatherData {
         return weatherApiService.getWeatherData(weatherApiKey, lat, lon, language)
+    }
+
+
+    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert> {
+        return weatherApiService.getAlertsOnly("hourly,daily,current,minutely", weatherApiKey, lat, lon).alerts
     }
 
     private val mapRetrofit =

@@ -55,6 +55,9 @@ class PreferencesFragment : Fragment() {
 
     lateinit var sharedPreferences : SharedPreferences
 
+    private var isLocationSelectedFromMap = false
+    private var isClearing = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -263,8 +266,9 @@ class PreferencesFragment : Fragment() {
 
             if(binding.rbGps.isChecked){
                 savePreferencesAndGoToHomeFragment()
-            } else if(binding.rbMap.isChecked){
+            } else if(binding.rbMap.isChecked){ //from img current location clicking
 
+                isLocationSelectedFromMap = true
                 val latLng = LatLng(latitudeDouble, longitudeDouble)
                 myMap.clear()
                 myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f), 1500, null)
@@ -275,6 +279,7 @@ class PreferencesFragment : Fragment() {
                 if (addresses != null) {
                     val address = addresses[0].getAddressLine(0)
                     binding.etSearchMap.text = Editable.Factory.getInstance().newEditable(address)
+                    binding.rvSearchSuggestions.visibility = View.GONE
                 }
             }
 
@@ -286,6 +291,9 @@ class PreferencesFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun setUpMapUsingLocationString(locationName: String) {
+
+        isLocationSelectedFromMap = true
+
         Log.i(TAG, "setUpMapUsingLocationString: called")
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses = geocoder.getFromLocationName(locationName, 1)
@@ -305,6 +313,9 @@ class PreferencesFragment : Fragment() {
     }
 
     private fun setUpMapOnClick(latLng: LatLng) {
+
+        isLocationSelectedFromMap = true
+
         latitudeDouble = latLng.latitude
         longitudeDouble = latLng.longitude
         val markerOptions = MarkerOptions().position(latLng)
@@ -325,18 +336,23 @@ class PreferencesFragment : Fragment() {
     private fun addTextChangedListenerToTheSearchEditText() {
         binding.etSearchMap.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                binding.rvSearchSuggestions.visibility = View.VISIBLE
-                binding.rvSearchSuggestions.setBackgroundColor(Color.WHITE)
-                binding.rvSearchSuggestions.alpha = 0.8f
+
+                if(!isClearing){
+                    binding.rvSearchSuggestions.visibility = View.VISIBLE
+                    binding.rvSearchSuggestions.setBackgroundColor(Color.WHITE)
+                    binding.rvSearchSuggestions.alpha = 0.8f
+                }
+                isClearing = false
+
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val mapsAutoCompleteResponse = MyApp.getInstanceRemoteDataSource().getMapsAutoCompleteResponse(s)
+                    val mapsAutoCompleteResponse = MyApp.getInstanceRepository().getMapsAutoCompleteResponse(s)
                     val predictions = mapsAutoCompleteResponse.predictions
                     val suggestions = mutableListOf<String>()
-                    for (i in 0 until predictions.size) {
-                        suggestions.add(predictions.get(i).description)
+                    for (i in predictions.indices) {
+                        suggestions.add(predictions[i].description)
                     }
                     withContext(Dispatchers.Main) {
                         binding.rvSearchSuggestions.adapter =
@@ -349,6 +365,7 @@ class PreferencesFragment : Fragment() {
                                     setUpMapUsingLocationString(suggestionSelected)
                                 }
                             })
+
                     }
                 }
 
@@ -367,7 +384,13 @@ class PreferencesFragment : Fragment() {
                 getLastLocation()
 
             } else {
-                savePreferencesAndGoToHomeFragment()
+                if(isLocationSelectedFromMap){
+                    isLocationSelectedFromMap = false
+                    savePreferencesAndGoToHomeFragment()
+                } else{
+                    Toast.makeText(requireContext(),"You haven't selected a location.", Toast.LENGTH_SHORT).show()
+                }
+
             }
 
         }
@@ -425,6 +448,7 @@ class PreferencesFragment : Fragment() {
 
     private fun activateClearSearchIconListener() {
         binding.imgClearSearch.setOnClickListener {
+            isClearing = true
             binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
         }
     }

@@ -10,18 +10,40 @@ data class WeatherData(
     val hourly: List<Hourly>,
     val lat: Double,
     val lon: Double,
+    val alerts: List<Alert>
 //    val timezone: String,
 //    val timezone_offset: Int
 )
 
 @Entity(tableName = "FavoriteAddressTable", primaryKeys = ["latlon"])
 data class FavoriteAddress(
-    var address: String,
+    val address: String,
     @NonNull
-    var latitude: Double,
+    val latitude: Double,
     @NonNull
-    var longitude: Double,
-    var latlon: String
+    val longitude: Double,
+    val latlon: String
+)
+
+data class Alert(
+    val description: String,
+    val start: Int,
+    val end: Int,
+    val event: String,
+    val sender_name: String,
+    val tags: List<String>
+)
+@Entity(tableName = "AlertsTable", primaryKeys = ["idHashLongFromLonLatStartStringEndStringAlertType"])
+data class AlertItem(
+    val address: String,
+    val longitudeString: String,
+    val latitudeString: String,
+    val startString: String,
+    val endString: String,
+    val startDT: Int,
+    val endDT: Int,
+    val idHashLongFromLonLatStartStringEndStringAlertType: Long,
+    val alertType: String
 )
 
 data class Current(

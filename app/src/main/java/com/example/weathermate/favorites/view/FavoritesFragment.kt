@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -68,14 +69,14 @@ class FavoritesFragment : Fragment() , OnItemClickFavorites {
     private fun setupFavoritesAdapter() {
         val mlayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        favoritesAdapter = FavoritesAdapter(this)
+        favoritesAdapter = FavoritesAdapter(this, lifecycleScope)
 
         binding.rvFavorites.apply {
             layoutManager = mlayoutManager
             adapter = favoritesAdapter
         }
 
-        MyApp.getInstanceLocalDataSource().getAllFavoriteAddresses().observe(viewLifecycleOwner){
+        MyApp.getInstanceRepository().getAllFavoriteAddresses().observe(viewLifecycleOwner){
             favoritesAdapter.submitList(it)
         }
 

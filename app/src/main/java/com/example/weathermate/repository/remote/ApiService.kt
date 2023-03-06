@@ -25,4 +25,12 @@ interface ApiService {
         @Query("lang") language: String
     ): WeatherData
 
+    @GET("data/2.5/onecall")
+    suspend fun getAlertsOnly(
+        @Query("exclude") exclude:String,
+        @Query("appid") apiKey: String,
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double
+    ): WeatherData
+
 }

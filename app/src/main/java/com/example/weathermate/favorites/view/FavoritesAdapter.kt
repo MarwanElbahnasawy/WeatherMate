@@ -10,10 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weathermate.MyApp
 import com.example.weathermate.databinding.ItemFavoriteBinding
 import com.example.weathermate.model.FavoriteAddress
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
-class FavoritesAdapter (private val onItemClickFavorites: OnItemClickFavorites)
+class FavoritesAdapter (private val onItemClickFavorites: OnItemClickFavorites,
+                        private val lifeCycleScopeInput: CoroutineScope
+)
     : ListAdapter<FavoriteAddress, FavoritesAdapter.FavoriteViewHolder>(FavoriteDiffUtil()){
 
 
@@ -49,8 +52,8 @@ class FavoriteDiffUtil : DiffUtil.ItemCallback<FavoriteAddress>() {
         holder.binding.tvAddressName.text = current.address
 
         holder.binding.imgDeleteFavorite.setOnClickListener {
-            GlobalScope.launch {
-                MyApp.getInstanceLocalDataSource().deleteFavoriteAddress(current)
+            lifeCycleScopeInput.launch {
+                MyApp.getInstanceRepository().deleteFavoriteAddress(current)
             }
 
         }

@@ -5,6 +5,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
+   <!-- needed the following 5 permissions for alerts, first 3 for both of them, post notifications for notifications,
+    and system alert window for alarms-->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -31,10 +40,20 @@
                 android:value="" />
         </activity>
 
-<!--        my key for maps-->
+<!--        my key for maps, needed for the map fragment to work and not throw exception-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyATC4Zk0_xofsFUTm0GRIyNej3syHx5oro"/>
+
+        <receiver android:name=".alerts.view.MyBroadcastReceiver" />
+
+        <receiver
+            android:name=".alerts.view.DismissReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.example.testalarm.DISMISS_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

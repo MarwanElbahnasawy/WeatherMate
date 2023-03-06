@@ -32,6 +32,7 @@ import com.example.weathermate.databinding.FragmentMapBinding
 import com.example.weathermate.initial_preferences.OnItemClickInitialPreferences
 import com.example.weathermate.initial_preferences.PERMISSION_LOCATION_ID
 import com.example.weathermate.initial_preferences.SearchSuggestionAdapter
+import com.example.weathermate.model.AlertItem
 import com.example.weathermate.model.FavoriteAddress
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -62,6 +63,10 @@ class MapFragment : Fragment() {
     lateinit var sharedPreferencesEditor :  SharedPreferences.Editor
 
     private var isLocationChosenOnMap = false
+
+    private var isClearing = false
+
+    private val args: MapFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -110,6 +115,11 @@ class MapFragment : Fragment() {
         if (latitudeDouble != 0.0){
             setMyAddressFromLatAndLon(latitudeDouble,longitudeDouble)
         }
+
+
+        if(args.isFromAlerts){
+            binding.btnAddToFavorites.text = "Select"
+        }
     }
 
     private fun initializeMapFragment() {
@@ -122,6 +132,11 @@ class MapFragment : Fragment() {
 
             }
         }
+
+        if (isLocationEnabled()){
+            getLastLocation()
+        }
+
     }
 
     @SuppressLint("MissingPermission")
@@ -211,9 +226,20 @@ class MapFragment : Fragment() {
 
             mfusedLocationProviderClient.removeLocationUpdates(this)
 
-            sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
-            sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
-            sharedPreferencesEditor.apply()
+            if(args.isFromSettings){
+                sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
+                sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
+                sharedPreferencesEditor.apply()
+            }
+
+            val latLng = LatLng(latitudeDouble, longitudeDouble)
+            val geocoder = Geocoder(requireContext())
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null) {
+                val address = addresses[0].getAddressLine(0)
+                binding.etSearchMap.text = Editable.Factory.getInstance().newEditable(address)
+                binding.rvSearchSuggestions.visibility = View.GONE
+            }
 
             moveMapWithLatAndLon(latitudeDouble , longitudeDouble)
 
@@ -249,14 +275,18 @@ class MapFragment : Fragment() {
     private fun addTextChangedListenerToTheSearchEditText() {
         binding.etSearchMap.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                binding.rvSearchSuggestions.visibility = View.VISIBLE
-                binding.rvSearchSuggestions.setBackgroundColor(Color.WHITE)
-                binding.rvSearchSuggestions.alpha = 0.8f
+
+                if(!isClearing) {
+                    binding.rvSearchSuggestions.visibility = View.VISIBLE
+                    binding.rvSearchSuggestions.setBackgroundColor(Color.WHITE)
+                    binding.rvSearchSuggestions.alpha = 0.8f
+                }
+                isClearing = false
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    val mapsAutoCompleteResponse = MyApp.getInstanceRemoteDataSource().getMapsAutoCompleteResponse(s)
+                    val mapsAutoCompleteResponse = MyApp.getInstanceRepository().getMapsAutoCompleteResponse(s)
                     val predictions = mapsAutoCompleteResponse.predictions
                     val suggestions = mutableListOf<String>()
                     for (i in 0 until predictions.size) {
@@ -316,9 +346,12 @@ class MapFragment : Fragment() {
             }
         }
 
-        sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
-        sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
-        sharedPreferencesEditor.apply()
+        if(args.isFromSettings){
+            sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
+            sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
+            sharedPreferencesEditor.apply()
+        }
+
 
     }
 
@@ -329,9 +362,13 @@ class MapFragment : Fragment() {
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f), 1500, null)
         myMap.addMarker(markerOptions)
 
-        sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
-        sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
-        sharedPreferencesEditor.apply()
+        if(args.isFromSettings){
+            sharedPreferencesEditor.putString("latitude", latitudeDouble.toString())
+            sharedPreferencesEditor.putString("longitude", longitudeDouble.toString())
+            sharedPreferencesEditor.apply()
+        }
+
+
     }
 
     private fun setMyAddressFromLatAndLon(latitude: Double, longitude: Double){
@@ -374,20 +411,20 @@ class MapFragment : Fragment() {
 
     private fun activateClearSearchIconListener() {
         binding.imgClearSearch.setOnClickListener {
+            isClearing = true
             binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
         }
     }
 
     private fun activateAddToFavoritesListener() {
-        val args: MapFragmentArgs by navArgs()
+        
         if(args.isFromFavorites){
-            arguments?.putBoolean("isFromFavorites" , false)
             binding.btnAddToFavorites.visibility = View.VISIBLE
             binding.btnAddToFavorites.setOnClickListener {
                 if (isLocationChosenOnMap){
                     isLocationChosenOnMap = false
                     lifecycleScope.launch {
-                        MyApp.getInstanceLocalDataSource().insertFavoriteAddress(FavoriteAddress(
+                        MyApp.getInstanceRepository().insertFavoriteAddress(FavoriteAddress(
                             address = myAddress,
                             latitude = latitudeDouble,
                             longitude = longitudeDouble,
@@ -398,8 +435,21 @@ class MapFragment : Fragment() {
                 }
             }
 
-        } else if (args.isFromSettings){
-            arguments?.putBoolean("isFromSettings" , false)
+        } else if (args.isFromAlerts){
+            binding.btnAddToFavorites.visibility = View.VISIBLE
+            binding.btnAddToFavorites.setOnClickListener {
+                if (isLocationChosenOnMap) {
+                    isLocationChosenOnMap = false
+                    sharedPreferencesEditor.putString("ALERT_LATITUDE_FROM_MAP", latitudeDouble.toString())
+                    sharedPreferencesEditor.putString("ALERT_LONGITUDE_FROM_MAP", longitudeDouble.toString())
+                    sharedPreferencesEditor.putString("ALERT_ADDRESS" , myAddress)
+                    sharedPreferencesEditor.apply()
+                }
+            }
+        }
+
+        else if (args.isFromSettings){
+
             binding.btnAddToFavorites.visibility = View.GONE
 
         }
@@ -408,6 +458,13 @@ class MapFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        arguments?.putBoolean("isFromFavorites" , false)
+        arguments?.putBoolean("isFromSettings" , false)
+        arguments?.putBoolean("isFromAlerts" , false)
     }
 
 }

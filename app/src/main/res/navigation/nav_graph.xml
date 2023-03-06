@@ -29,12 +29,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_alerts"
-        android:name="com.example.weathermate.alerts.view.AlertsFragment"
-        android:label="@string/title_alerts"
-        tools:layout="@layout/fragment_alerts" />
-
-    <fragment
         android:id="@+id/navigation_preferences"
         android:name="com.example.weathermate.initial_preferences.PreferencesFragment"
         android:label="@string/title_preferences"
@@ -63,6 +57,19 @@
             android:name="isFromFavorites"
             app:argType="boolean"
             android:defaultValue="false" />
+        <argument
+            android:name="isFromAlerts"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_alerts"
+        android:name="com.example.weathermate.alerts.view.AlertFragment"
+        android:label="fragment_alert"
+        tools:layout="@layout/fragment_alert" >
+        <action
+            android:id="@+id/action_navigation_alerts_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
 
 </navigation>

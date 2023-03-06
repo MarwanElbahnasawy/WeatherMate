@@ -36,4 +36,14 @@ class Converters {
     fun toJsonHourlyList(list: List<Hourly>): String {
         return Gson().toJson(list)
     }
+    @TypeConverter
+    fun fromJsonAlertList(value: String): List<Alert> {
+        val listType = object : TypeToken<List<Alert>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun toJsonAlertList(list: List<Alert>): String {
+        return Gson().toJson(list)
+    }
 }

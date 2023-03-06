@@ -47,7 +47,7 @@ class DailyDiffUtil : DiffUtil.ItemCallback<Daily>() {
     override fun onBindViewHolder(holder: DailyViewHolder, position: Int) {
         val current = getItem(position)
 
-        val date = Date(current.dt * 1000L)  // converts seconds to milliseconds
+        val date = Date(current.dt * 1000L)
         val format = SimpleDateFormat("EEEE", Locale.getDefault())
         format.timeZone = TimeZone.getTimeZone("GMT+2")
         holder.binding.dayNameTextView.text = format.format(date).toString()
