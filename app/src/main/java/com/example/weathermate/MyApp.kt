@@ -1,16 +1,17 @@
 package com.example.weathermate
 
 import android.app.Application
-import com.example.weathermate.repository.Repository
-import com.example.weathermate.repository.local.LocalDataSource
-import com.example.weathermate.repository.remote.RemoteDataSource
+import com.example.weathermate.data.Repository
+import com.example.weathermate.data.local.LocalDataSource
+import com.example.weathermate.data.remote.RemoteDataSource
+import com.example.weathermate.util.HelperObject
 
 class MyApp : Application() {
-
     companion object {
+
         private var localDataSource: LocalDataSource? = null
         private var remoteDataSource: RemoteDataSource? = null
-        private var repository: Repository? = null
+        private val repository by lazy { Repository(localDataSource!!, remoteDataSource!!) }
 
         @Synchronized
         fun getInstanceRepository(): Repository {
@@ -23,8 +24,8 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        HelperObject.createSharedPreferencesInstance(this)
         localDataSource = LocalDataSource.getInstance(this)
         remoteDataSource = RemoteDataSource.getInstance(this)
-        repository = Repository(localDataSource!!, remoteDataSource!!)
     }
 }

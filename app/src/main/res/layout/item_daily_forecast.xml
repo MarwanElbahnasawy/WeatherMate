@@ -25,20 +25,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/dayLowestTemperatureTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="low"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/dayHighestTemperatureTextView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/dayHighestTemperatureTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
+        android:text="high"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/dayLowestTemperatureTextView"
-        app:layout_constraintTop_toTopOf="@+id/dayStatusImageView" />
-
-    <TextView
-        android:id="@+id/dayLowestTemperatureTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/dayStatusImageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/dayStatusImageView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
