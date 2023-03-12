@@ -7,6 +7,7 @@ import com.example.weathermate.data.Repository
 import com.example.weathermate.data.local.LocalDataSource
 import com.example.weathermate.data.remote.RemoteDataSource
 import com.example.weathermate.util.MyHelper
+import com.example.weathermate.util.NetworkManager
 
 class MyApp : Application() {
     companion object {
@@ -30,5 +31,6 @@ class MyApp : Application() {
         MyHelper.createSharedPreferencesInstance(this)
         localDataSource = LocalDataSource.getInstance(this)
         remoteDataSource = RemoteDataSource.getInstance(this)
+        NetworkManager.init(this)
     }
 }
