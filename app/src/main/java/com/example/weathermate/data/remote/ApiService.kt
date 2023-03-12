@@ -18,7 +18,7 @@ interface ApiService {
         @Query("input") textInput: CharSequence?) : MapsAutoCompleteResponse
 
     @GET("data/2.5/onecall")
-    suspend fun getWeatherData(
+    suspend fun getWeatherDataOnline(
         @Query("appid") apiKey: String,
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,

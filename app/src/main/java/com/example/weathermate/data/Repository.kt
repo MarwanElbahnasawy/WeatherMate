@@ -19,11 +19,11 @@ class Repository (var localDataSource: LocalDataSource, var remoteDataSource: Re
 
     //From Remote:
 
-    suspend fun getWeatherData(lat: Double, lon: Double, language: String) = flow {
-        emit(remoteDataSource.getWeatherData(lat, lon, language))
+    suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String) = flow {
+        emit(remoteDataSource.getWeatherDataOnline(lat, lon, language))
     }
 
-    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert> {
+    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert>? {
         return remoteDataSource.getAlertsOnly(lat, lon)
     }
 
@@ -34,20 +34,13 @@ class Repository (var localDataSource: LocalDataSource, var remoteDataSource: Re
     //From Local
 
     //Weather
-    fun storedWeatherData(): LiveData<List<WeatherData>> {
-        return localDataSource.storedWeatherData()
+
+    suspend fun getWeatherDataFromDB(): WeatherData?{
+        return localDataSource.getWeatherDataFromDB()
     }
 
-    suspend fun findWeatherDataByLatlon(latitude: Double, longitude: Double): WeatherData {
-        return localDataSource.findWeatherDataByLatlon(latitude, longitude)
-    }
-
-    suspend fun insertWeatherData(weatherData: WeatherData){
-        localDataSource.insertWeatherData(weatherData)
-    }
-
-    suspend fun deleteWeatherData(weatherData: WeatherData){
-        localDataSource.deleteWeatherData(weatherData)
+    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
+        localDataSource.insertOrUpdateWeatherData(weatherData)
     }
 
     //Favorites

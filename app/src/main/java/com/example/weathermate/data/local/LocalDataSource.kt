@@ -33,21 +33,14 @@ class LocalDataSource private constructor(context: Context) {
     }
 
     //Weather
-    fun storedWeatherData(): LiveData<List<WeatherData>>{
-        return weatherDataDAO.storedWeatherData()
+
+    suspend fun getWeatherDataFromDB(): WeatherData?{
+        return weatherDataDAO.getWeatherDataFromDB()
+    }
+    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData){
+        weatherDataDAO.insertOrUpdateWeatherData(weatherData)
     }
 
-    suspend fun findWeatherDataByLatlon(latitude: Double, longitude: Double): WeatherData {
-        return weatherDataDAO.findWeatherDataByLatlon(latitude, longitude)
-    }
-
-    suspend fun insertWeatherData(weatherData: WeatherData){
-        weatherDataDAO.insertWeatherData(weatherData)
-    }
-
-    suspend fun deleteWeatherData(weatherData: WeatherData){
-        weatherDataDAO.deleteWeatherData(weatherData)
-    }
 
     //Favorites
     fun getAllFavoriteAddresses(): LiveData<List<FavoriteAddress>>{

@@ -32,7 +32,7 @@ class MapViewModel(private val repository: Repository) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            val data = repository.getWeatherData(latitudeDouble,
+            val data = repository.getWeatherDataOnline(latitudeDouble,
                 longitudeDouble,
                 "en")
 

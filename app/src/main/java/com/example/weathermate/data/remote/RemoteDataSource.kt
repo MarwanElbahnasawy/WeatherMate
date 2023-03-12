@@ -27,12 +27,12 @@ class RemoteDataSource private constructor(context: Context) {
     private val weatherRetrofit = RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_WEATHER)
     private val weatherApiService = weatherRetrofit.create(ApiService::class.java)
 
-    suspend fun getWeatherData(lat: Double, lon: Double, language: String): WeatherData {
-        return weatherApiService.getWeatherData(weatherApiKey, lat, lon, language)
+    suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String): WeatherData {
+        return weatherApiService.getWeatherDataOnline(weatherApiKey, lat, lon, language)
     }
 
 
-    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert> {
+    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert>? {
         return weatherApiService.getAlertsOnly("hourly,daily,current,minutely", weatherApiKey, lat, lon).alerts
     }
 

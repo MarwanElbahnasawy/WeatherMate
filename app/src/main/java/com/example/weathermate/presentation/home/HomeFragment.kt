@@ -28,6 +28,8 @@ import com.example.weathermate.data.remote.RetrofitStateWeather
 import com.example.weathermate.databinding.FragmentHomeBinding
 import com.example.weathermate.util.MyHelper
 import com.example.weathermate.util.MyConverters
+import com.example.weathermate.util.NetworkManager
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,32 +64,40 @@ class HomeFragment : Fragment() {
         val viewModelFactory = HomeViewModelFactory(MyApp.getInstanceRepository())
         homeViewModel = ViewModelProvider(this, viewModelFactory)[HomeViewModel::class.java]
 
+        checkInternet()
+
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             findNavController().navigate(R.id.navigation_home)
         }
 
-        initFrag()
-        homeViewModel.initPreferencesManager(requireContext())
 
-        homeViewModel.setLatitudeAndLongitude()
-
-        getWeatherData()
-
-        animateImages()
 
     }
 
-    private fun animateImages() {
-        animateWeatherImage(binding.imgCloudiness)
-        animateWeatherImage(binding.imgPressure)
-        animateWeatherImage(binding.imgHumidity)
-        animateWeatherImage(binding.imgWind)
+    private fun checkInternet() {
+        if(NetworkManager.isInternetConnected()){
+            homeViewModel.initPreferencesManager(requireContext())
+            homeViewModel.setLatitudeAndLongitude()
+            getWeatherData()
+            animateImages()
+        } else{
+            lifecycleScope.launch(Dispatchers.Main) {
+                val savedWeatherData = homeViewModel.getWeatherDataFromDatabase()
+                if (savedWeatherData != null){
+                    homeViewModel.initPreferencesManager(requireContext())
+                    homeViewModel.setLatitudeAndLongitude()
+                    updateUi(savedWeatherData)
+                    animateImages()
+                }
+            }
+
+        }
     }
 
     private fun getWeatherData() {
         lifecycleScope.launch {
-            homeViewModel.getWeatherData()
+            homeViewModel.getWeatherDataOnline()
             homeViewModel.retrofitStateWeather.collectLatest {
                 when (it) {
                     is RetrofitStateWeather.Loading -> {
@@ -100,6 +110,9 @@ class HomeFragment : Fragment() {
                         binding.scrollViewIDHome.visibility = View.VISIBLE
                         binding.imgLoading.visibility = View.GONE
                         binding.imgLoading.pauseAnimation()
+
+                        homeViewModel.insertOrUpdateWeatherData(it.weatherData)
+
                     }
                     is RetrofitStateWeather.OnFail -> {
                         Log.i(TAG, it.errorMessage.toString())
@@ -109,15 +122,11 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun initFrag() {
+    @SuppressLint("SetTextI18n")
+    private fun updateUi(weatherData: WeatherData) {
         homeViewModel.cityName.observe(viewLifecycleOwner) {
             updateCityName(it)
         }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private fun updateUi(weatherData: WeatherData) {
-
         updateTemperature(weatherData)
         binding.tvHumidity.text =
             "${MyConverters.convertHumidtyOrPressureOrTemperature(weatherData.current.humidity)} %"
@@ -237,6 +246,13 @@ class HomeFragment : Fragment() {
         animationView.repeatCount = LottieDrawable.INFINITE
         animationView.repeatMode = LottieDrawable.RESTART
         animationView.playAnimation()
+    }
+
+    private fun animateImages() {
+        animateWeatherImage(binding.imgCloudiness)
+        animateWeatherImage(binding.imgPressure)
+        animateWeatherImage(binding.imgHumidity)
+        animateWeatherImage(binding.imgWind)
     }
 
     private fun animateWeatherImage(imageViewWeatherIcon: ImageView) {

@@ -11,7 +11,6 @@ import android.graphics.PixelFormat
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
@@ -19,7 +18,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
-import androidx.core.view.ViewCompat
 import com.example.weathermate.MainActivity
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
@@ -136,7 +134,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             myCoroutineScope.launch {
 
 
-                val data = MyApp.getInstanceRepository().getWeatherData(lat = latitude.toDouble(),
+                val data = MyApp.getInstanceRepository().getWeatherDataOnline(lat = latitude.toDouble(),
                     lon = longitude.toDouble(), language = "en")
 
                 data.catch {
@@ -255,7 +253,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
             myCoroutineScope.launch {
 
-                val data = MyApp.getInstanceRepository().getWeatherData(lat = latitude.toDouble(),
+                val data = MyApp.getInstanceRepository().getWeatherDataOnline(lat = latitude.toDouble(),
                     lon = longitude.toDouble(), language = "en")
 
                 data.catch {

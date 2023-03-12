@@ -2,9 +2,9 @@ package com.example.weathermate.presentation.home
 
 import android.content.Context
 import android.location.Geocoder
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.weathermate.data.Repository
+import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.remote.RetrofitStateWeather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,11 +29,11 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
         geocoder = Geocoder(context, Locale.getDefault())
     }
 
-    suspend fun getWeatherData() {
+    suspend fun getWeatherDataOnline() {
         viewModelScope.launch(Dispatchers.IO) {
             if (repository.getStringFromSharedPreferences("language", "").equals("english")) {
 
-                val data = repository.getWeatherData(latitudeDouble,
+                val data = repository.getWeatherDataOnline(latitudeDouble,
                     longitudeDouble,
                     "en")
 
@@ -45,7 +45,7 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
                     }
             } else {
 
-                val data = repository.getWeatherData(latitudeDouble,
+                val data = repository.getWeatherDataOnline(latitudeDouble,
                     longitudeDouble,
                     "ar")
 
@@ -94,5 +94,13 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
     fun getStringFromSharedPreferences(key: String, stringDefault: String) : String{
         return repository.getStringFromSharedPreferences(key, stringDefault)
     }
-    
+
+    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
+        repository.insertOrUpdateWeatherData(weatherData)
+    }
+
+    suspend fun getWeatherDataFromDatabase(): WeatherData? {
+        return repository.getWeatherDataFromDB()
+    }
+
 }

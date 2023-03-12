@@ -115,14 +115,18 @@ class MyConverters {
         return Gson().toJson(list)
     }
     @TypeConverter
-    fun fromJsonAlertList(value: String): List<Alert> {
-        val listType = object : TypeToken<List<Alert>>() {}.type
-        return Gson().fromJson(value, listType)
+    fun fromJsonAlertList(value: String): List<Alert>? {
+        return if (value.isNullOrEmpty()) {
+            null
+        } else {
+            val listType = object : TypeToken<List<Alert>>() {}.type
+            Gson().fromJson(value, listType)
+        }
     }
 
     @TypeConverter
-    fun toJsonAlertList(list: List<Alert>): String {
-        return Gson().toJson(list)
+    fun toJsonAlertList(list: List<Alert>?): String {
+        return list?.let { Gson().toJson(it) } ?: ""
     }
 
 }

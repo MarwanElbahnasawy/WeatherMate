@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 class FavoritesViewModel(private val repository: Repository) : ViewModel() {
 
@@ -49,11 +48,11 @@ class FavoritesViewModel(private val repository: Repository) : ViewModel() {
             if (favoriteAddresses.isNotEmpty()){
                 favoriteAddresses.forEach {currentFavoriteFromRepository ->
                     val data = if(repository.getStringFromSharedPreferences("language","")=="english") {
-                        repository.getWeatherData(currentFavoriteFromRepository.latitude,
+                        repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
                             currentFavoriteFromRepository.longitude,
                             "en")
                     }  else{
-                        repository.getWeatherData(currentFavoriteFromRepository.latitude,
+                        repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
                             currentFavoriteFromRepository.longitude,
                             "ar")
                     }
