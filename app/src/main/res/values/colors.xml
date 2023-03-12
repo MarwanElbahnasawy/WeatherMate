@@ -7,4 +7,27 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="my_custom_white_1">#FDFDFD</color>
+    <color name="my_custom_white_2">#FCFCFC</color>
+    <color name="my_custom_white_3">#FAFAFA</color>
+    <color name="my_custom_white_4">#F5F5F5</color>
+    <color name="my_custom_white_5">#F1F1F1</color>
+    <color name="my_custom_white_6">#DCDCDC</color>
+    <color name="myCustomGray1">#E1E1E1</color>
+    <color name="myCustomGray2">#D8D8D8</color>
+    <color name="myCustomGray3">#CCCCCC</color>
+    <color name="myCustomGray4">#C1C1C1</color>
+    <color name="myCustomGray5">#B5B5B5</color>
+    <color name="myCustomGray6">#A5A5A5</color>
+    <color name="myCustomGray7">#9A9A9A</color>
+    <color name="myCustomGray8">#8E8D8D</color>
+    <color name="gradient_start">#FFAA33</color>
+    <color name="gradient_middle">#FF7518</color>
+    <color name="gradient_end">#E93131</color>
+    <color name="myPurple">#E0B0FF</color>
+    <color name="mygreen">#5DFF16</color>
+    <color name="myblue">#1621FF</color>
+    <color name="myindigo">#F116FF</color>
+    <color name="mycyan">#0EFFF4</color>
+    <color name="mydarkpurple">#8103FF</color>
 </resources>

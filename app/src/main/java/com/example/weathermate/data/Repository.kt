@@ -9,12 +9,12 @@ import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.model.MapsAutoCompleteResponse
 import com.example.weathermate.data.local.LocalDataSource
 import com.example.weathermate.data.remote.RemoteDataSource
-import com.example.weathermate.util.HelperObject
+import com.example.weathermate.util.MyHelper
 import kotlinx.coroutines.flow.flow
 
 class Repository (var localDataSource: LocalDataSource, var remoteDataSource: RemoteDataSource){
 
-    private val sharedPreferences = HelperObject.getSharedPreferencesInstance()
+    private val sharedPreferences = MyHelper.getSharedPreferencesInstance()
     private val sharedPreferencesEditor = sharedPreferences.edit()
 
     //From Remote:

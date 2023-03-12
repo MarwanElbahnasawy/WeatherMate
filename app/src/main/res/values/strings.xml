@@ -5,13 +5,16 @@
     <string name="title_alerts">Alerts</string>
     <string name="title_settings">Settings</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="save">Save</string>
     <string name="fahrenheit">Fahrenheit</string>
     <string name="celsius">Celsius</string>
+    <string name="kelvin">Kelvin</string>
+    <string name="fahrenheitUnit">°F</string>
+    <string name="celsiusUnit">°C</string>
+    <string name="kelvinUnit">°K</string>
     <string name="language">Language</string>
-    <string name="mph">mph</string>
-    <string name="kph">kph</string>
+    <string name="hPa">hPa</string>
     <string name="wind_unit">Wind</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
@@ -21,7 +24,36 @@
     <string name="gps">GPS</string>
     <string name="map">Map</string>
     <string name="search_map">Search for a location</string>
-    <string name="google_maps_key">AIzaSyATC4Zk0_xofsFUTm0GRIyNej3syHx5oro</string>
-    <string name="openweathermap_key">04140387a0c9b9535e981afe74e9ac2a</string>
-    <string name="kelvin">Kelvin</string>
+    <string name="google_maps_key" translatable="false">AIzaSyATC4Zk0_xofsFUTm0GRIyNej3syHx5oro</string>
+    <string name="openweathermap_key" translatable="false">04140387a0c9b9535e981afe74e9ac2a</string>
+    <string name="humidity">Humidity</string>
+    <string name="pressure">Pressure</string>
+    <string name="cloudiness">Cloudiness</string>
+    <string name="wind">Wind</string>
+    <string name="savePreferences">Save Preferences</string>
+    <string name="unknown">Unknown</string>
+    <string name="lastCheckedAt">Last checked at:</string>
+    <string name="startDate">Start Date</string>
+    <string name="endDate">End Date</string>
+    <string name="mpsUnit">m/s</string>
+    <string name="mphUnit">mph</string>
+    <string name="mps">Metre Per Second</string>
+    <string name="mph">Miles Per Hour</string>
+    <string name="WeatherMate">Weather Mate</string>
+    <string name="WeatherMateAlert">WeatherMate Alert</string>
+    <string name="weatherMateAlarmDescription">WeatherMate Alarm Description</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="selectLocation">Select Location</string>
+    <string name="notification">Notification</string>
+    <string name="alarm">Alarm</string>
+    <string name="cancel">Cancel</string>
+    <string name="noWarnings">There are no warnings at the moment</string>
+    <string name="internetDisconnectedAlert">Internet is disconnected, can\'t retrieve weather data.</string>
+    <string name="warningAlert">"Warning: "</string>
+    <string name="dismissAlert">Dismiss</string>
+    <string name="startsAt">Starts at:</string>
+    <string name="endsAt">Ends at:</string>
+    <string name="at">at</string>
+
 </resources>

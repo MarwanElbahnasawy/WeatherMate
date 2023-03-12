@@ -4,14 +4,11 @@ import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.Repository
-import com.example.weathermate.data.remote.RetrofitState
+import com.example.weathermate.data.remote.RetrofitStateWeather
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
@@ -27,8 +24,7 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
 
     val cityName = MutableLiveData<String>()
 
-    val retrofitState = MutableStateFlow<RetrofitState>(RetrofitState.Loading)
-
+    val retrofitStateWeather = MutableStateFlow<RetrofitStateWeather>(RetrofitStateWeather.Loading)
     fun initPreferencesManager(context: Context) {
         geocoder = Geocoder(context, Locale.getDefault())
     }
@@ -42,24 +38,22 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
                     "en")
 
                 data.catch {
-                    retrofitState.value = RetrofitState.onFail(Throwable("Error retrieving data"))
+                    retrofitStateWeather.value = RetrofitStateWeather.OnFail(Throwable("Error retrieving data"))
                 }
                     .collectLatest{
-                        retrofitState.value = RetrofitState.onSuccess(it)
+                        retrofitStateWeather.value = RetrofitStateWeather.OnSuccess(it)
                     }
-                Log.i(TAG, "getWeatherData: after english call")
             } else {
-                Log.i(TAG, "getWeatherData: ++++++++++++arabbic" )
 
                 val data = repository.getWeatherData(latitudeDouble,
                     longitudeDouble,
                     "ar")
 
                 data.catch {
-                    retrofitState.value = RetrofitState.onFail(Throwable("Error retrieving data"))
+                    retrofitStateWeather.value = RetrofitStateWeather.OnFail(Throwable("Error retrieving data"))
                 }
                     .collectLatest{
-                        retrofitState.value = RetrofitState.onSuccess(it)
+                        retrofitStateWeather.value = RetrofitStateWeather.OnSuccess(it)
                     }
             }
 
@@ -93,9 +87,9 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
         return repository.getStringFromSharedPreferences("wind_speed_unit", "")
     }
 
-    fun isPreferencesSet(): Boolean {
+   /* fun isPreferencesSet(): Boolean {
         return repository.getBooleanFromSharedPreferences("preferences_set", false)
-    }
+    }*/
 
     fun getStringFromSharedPreferences(key: String, stringDefault: String) : String{
         return repository.getStringFromSharedPreferences(key, stringDefault)

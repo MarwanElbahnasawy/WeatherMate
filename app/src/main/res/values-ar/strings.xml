@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WeatherMate</string>
+    <string name="title_home">الرئيسية</string>
+    <string name="title_favorites">المفضلة</string>
+    <string name="title_alerts">التنبيهات</string>
+    <string name="title_settings">الإعدادات</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="save">حفظ</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="celsius">مئوية</string>
+    <string name="language">اللغة</string>
+    <string name="fahrenheitUnit">°ف</string>
+    <string name="celsiusUnit">°م</string>
+    <string name="kelvinUnit">°ك</string>
+    <string name="hPa">هـ.ب</string>
+    <string name="wind_unit">الرياح</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="title_preferences">التفضيلات</string>
+    <string name="temperature_unit">الحرارة</string>
+    <string name="location">الموقع</string>
+    <string name="gps">الموقع الحالي</string>
+    <string name="map">الخريطة</string>
+    <string name="search_map">البحث عن موقع</string>
+     <string name="kelvin">كلفن</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="pressure">الضغط</string>
+    <string name="cloudiness">نسبة الغيوم</string>
+    <string name="wind">الرياح</string>
+    <string name="savePreferences">حفظ التفضيلات</string>
+    <string name="unknown">غير معروف</string>
+    <string name="lastCheckedAt">آخر تحقق في:</string>
+    <string name="startDate">تاريخ البدء</string>
+    <string name="endDate">تاريخ الانتهاء</string>
+    <string name="mpsUnit">م/ث</string>
+    <string name="mphUnit">ميل/س</string>
+    <string name="mps">متر في الثانية</string>
+    <string name="mph">ميل في الساعة</string>
+    <string name="WeatherMate">Weather Mate</string>
+    <string name="WeatherMateAlert">تنبية WeatherMate</string>
+    <string name="weatherMateAlarmDescription">WeatherMate Alarm Description</string>
+    <string name="from">من</string>
+    <string name="to">إلى</string>
+    <string name="selectLocation">اختيار الموقع</string>
+    <string name="notification">إشعار</string>
+    <string name="alarm">تنبيه</string>
+    <string name="cancel">إلغاء</string>
+    <string name="noWarnings">لا توجد تحذيرات في الوقت الحالي</string>
+    <string name="internetDisconnectedAlert">تم فصل الاتصال بالإنترنت، لا يمكن استرداد بيانات الطقس.</string>
+    <string name="warningAlert">"تحذير: "</string>
+    <string name="dismissAlert">تجاهل</string>
+    <string name="startsAt">يبدأ في:</string>
+    <string name="endsAt">ينتهي عند:</string>
+    <string name="at">في</string>
+
+</resources>

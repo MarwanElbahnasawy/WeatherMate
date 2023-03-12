@@ -11,7 +11,14 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         repository.putStringInSharedPreferences(key, stringInput)
     }
 
+    fun putBooleanInSharedPreferences(key: String, boolean: Boolean){
+        repository.putBooleanInSharedPreferences(key, boolean)
+    }
+
     fun getStringFromSharedPreferences(key: String, stringDefault: String) : String{
         return repository.getStringFromSharedPreferences(key, stringDefault)
     }
+
+
+
 }

@@ -9,6 +9,8 @@ android {
     namespace 'com.example.weathermate'
     compileSdk 33
 
+
+
     defaultConfig {
         applicationId "com.example.weathermate"
         minSdk 23
@@ -90,5 +92,13 @@ dependencies {
     // for auto complete maps (both these dependencies give error)
     //implementation 'com.google.android.libraries.places:places:3.0.0'
 
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.7.0'
+
+    //bottom nav bar
+    implementation 'nl.joery.animatedbottombar:library:1.1.0'
+
+    //Swipe home to refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
 }

@@ -15,14 +15,18 @@ data class WeatherData(
 //    val timezone_offset: Int
 )
 
-@Entity(tableName = "FavoriteAddressTable", primaryKeys = ["latlon"])
+@Entity(tableName = "FavoriteAddressTable", primaryKeys = ["latlngString"])
 data class FavoriteAddress(
     val address: String,
     @NonNull
     val latitude: Double,
     @NonNull
     val longitude: Double,
-    val latlon: String
+    val latlngString: String,
+    val currentTemp: Double,
+    val currentDescription: String,
+    val lastCheckedTime: Long,
+    val icon: String
 )
 
 data class Alert(
@@ -43,7 +47,8 @@ data class AlertItem(
     val startDT: Int,
     val endDT: Int,
     val idHashLongFromLonLatStartStringEndStringAlertType: Long,
-    val alertType: String
+    val alertType: String,
+    val timeAdded: Long
 )
 
 data class Current(

@@ -1,6 +1,8 @@
 package com.example.weathermate.util
 
+import android.content.Context
 import androidx.room.TypeConverter
+import com.example.weathermate.R
 import com.example.weathermate.data.model.Alert
 import com.example.weathermate.data.model.Current
 import com.example.weathermate.data.model.Daily
@@ -19,26 +21,65 @@ class MyConverters {
             return temp * 9/5 - 459.67
         }
 
-        fun meterPerSecondToKilometerPerHour(speed: Double): Double {
-            return speed * 3.6
+        fun meterPerSecondToMilePerHour(speed: Double): Double {
+            return speed * 2.237
         }
 
-        fun getMonth(month: Int): String {
-            val months = arrayOf(
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December"
-            )
-            return months[month]
+        fun convertTemperature(temp: Double, context: Context): String {
+
+                if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
+                    return when (MyHelper.getSharedPreferencesInstance().getString("temperature_unit", "")){
+                        "celsius" -> "${(kelvinToCelsius(temp).toInt().toString())} ${context.getString(R.string.celsiusUnit)}"
+                        "fahrenheit" -> "${(kelvinToFahrenheit(temp).toInt().toString())} ${context.getString(R.string.fahrenheitUnit)}"
+                        else -> "${((temp).toInt().toString())} ${context.getString(R.string.kelvinUnit)}"
+
+                    }
+                } else{
+                    return when (MyHelper.getSharedPreferencesInstance().getString("temperature_unit", "")){
+                        "celsius" -> "${convertToArabicNumber(kelvinToCelsius(temp).toInt().toString())} ${context.getString(R.string.celsiusUnit)}"
+                        "fahrenheit" -> "${convertToArabicNumber(kelvinToFahrenheit(temp).toInt().toString())} ${context.getString(R.string.fahrenheitUnit)}"
+                        else -> "${convertToArabicNumber((temp).toInt().toString())} ${context.getString(R.string.kelvinUnit)}"
+
+                    }
+                }
+        }
+
+        fun convertWind(wind: Double, context: Context): String {
+            if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
+                return when (MyHelper.getSharedPreferencesInstance().getString("wind_speed_unit", "")){
+                    "mph" -> "${(meterPerSecondToMilePerHour(wind).toInt().toString())} ${context.getString(R.string.mphUnit)}"
+                    else -> "${((wind).toInt().toString())} ${context.getString(R.string.mpsUnit)}"
+                }
+            } else{
+                return when (MyHelper.getSharedPreferencesInstance().getString("wind_speed_unit", "")){
+                    "mph" -> "${convertToArabicNumber(meterPerSecondToMilePerHour(wind).toInt().toString())} ${context.getString(R.string.mphUnit)}"
+                    else -> "${convertToArabicNumber((wind).toInt().toString())} ${context.getString(R.string.mpsUnit)}"
+                }
+            }
+
+        }
+
+        fun convertHumidtyOrPressureOrTemperature(input: Int): String {
+            if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
+                return input.toString()
+            } else{
+                return convertToArabicNumber(input.toString())
+            }
+
+        }
+
+        fun convertToArabicNumber(englishNumberInput: String): String {
+            val arabicNumbers = charArrayOf('٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩')
+            val englishNumbers = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
+            val builder = StringBuilder()
+            for (i in englishNumberInput) {
+                if (englishNumbers.contains(i)) {
+                    builder.append(arabicNumbers[englishNumbers.indexOf(i)])
+                } else {
+                    builder.append(i) // point
+                }
+            }
+            return builder.toString()
         }
     }
 

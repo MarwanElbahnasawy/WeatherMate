@@ -1,6 +1,8 @@
 package com.example.weathermate.presentation.map
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +13,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,10 +23,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
-import com.example.weathermate.databinding.FragmentMapBinding
 import com.example.weathermate.data.model.FavoriteAddress
+import com.example.weathermate.data.remote.RetrofitStateWeather
+import com.example.weathermate.databinding.FragmentMapBinding
 import com.example.weathermate.presentation.initial_preferences.InterfaceInitialPreferences
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -104,9 +111,9 @@ class MapFragment : Fragment(), MapManagerInterface {
 
         addTextChangedListenerToTheSearchEditText()
 
+        insertToFavorites()
 
     }
-
     private fun initFrag() {
 
         geocoder = Geocoder(requireContext(), Locale.getDefault())
@@ -118,9 +125,17 @@ class MapFragment : Fragment(), MapManagerInterface {
         }
 
 
-        if(args.isFromAlerts){
-            binding.btnAddToFavorites.text = "Select"
+        if(args.isFromAlerts || args.isFromSettings){
+            binding.btnSelectOrAddOnMap.text = "Select"
         }
+
+        startLottieAnimation(binding.imgSearchIcon , "search.json")
+        startLottieAnimation(binding.imgClearSearch , "delete.json")
+
+        val animator = ObjectAnimator.ofFloat(binding.imgCurrentLocation, "rotation", 0f, 360f)
+        animator.repeatCount = ValueAnimator.INFINITE
+        animator.duration = 2000
+        animator.start()
     }
 
     private fun initializeMapFragment() {
@@ -139,6 +154,7 @@ class MapFragment : Fragment(), MapManagerInterface {
     }
 
     fun setUpMapOnClick(latLng: LatLng) {
+        isLocationChosenOnMap = true
         moveMap(latLng)
         convertLatLonToAddressAndSetSearchText(latLng)
     }
@@ -168,17 +184,13 @@ class MapFragment : Fragment(), MapManagerInterface {
     }
 
     private fun dealWithLocationResult(locationResult: LocationResult) {
+        binding.btnSelectOrAddOnMap.isEnabled = true
         isLocationChosenOnMap = true
         val mLastLocation: Location = locationResult.lastLocation
         longitudeDouble = mLastLocation.longitude
         latitudeDouble = mLastLocation.latitude
 
         setMyAddressFromLatAndLon(latitudeDouble, longitudeDouble)
-
-        if(args.isFromSettings){
-            mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
-            mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-        }
 
 
         val latLng = LatLng(latitudeDouble, longitudeDouble)
@@ -197,10 +209,10 @@ class MapFragment : Fragment(), MapManagerInterface {
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f), 1500, null)
         myMap.addMarker(markerOptions)
 
-        if(args.isFromSettings){
+     /*   if(args.isFromSettings){
             mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
             mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-        }
+        }*/
 
     }
 
@@ -210,7 +222,7 @@ class MapFragment : Fragment(), MapManagerInterface {
         latitudeDouble = latLng.latitude
         longitudeDouble = latLng.longitude
         val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-        if (addresses != null) {
+        if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             binding.etSearchMap.text = Editable.Factory.getInstance().newEditable(address)
             binding.rvSearchSuggestions.visibility = View.GONE
@@ -266,7 +278,7 @@ class MapFragment : Fragment(), MapManagerInterface {
         isLocationChosenOnMap = true
         if (isAdded) {
             val addresses = geocoder.getFromLocationName(locationName, 1)
-            if (addresses != null) {
+            if (addresses != null && addresses.isNotEmpty()) {
                 if (addresses.isNotEmpty()) {
                     latitudeDouble = addresses[0].latitude
                     longitudeDouble = addresses[0].longitude
@@ -278,17 +290,17 @@ class MapFragment : Fragment(), MapManagerInterface {
                 }
             }
         }
-        if(args.isFromSettings){
+/*        if(args.isFromSettings){
             mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
             mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-        }
+        }*/
 
 
     }
 
     private fun setMyAddressFromLatAndLon(latitude: Double, longitude: Double){
         val addresses = geocoder.getFromLocation(latitude, longitude, 1)
-        if (addresses != null) {
+        if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0]
             val addressName =
                 address.locality ?: address.subAdminArea ?: address.adminArea
@@ -333,39 +345,80 @@ class MapFragment : Fragment(), MapManagerInterface {
     private fun activateAddButtonListener() {
         
         if(args.isFromFavorites){
-            binding.btnAddToFavorites.visibility = View.VISIBLE
-            binding.btnAddToFavorites.setOnClickListener {
+            binding.btnSelectOrAddOnMap.visibility = View.VISIBLE
+            binding.btnSelectOrAddOnMap.setOnClickListener {
                 if (isLocationChosenOnMap){
                     isLocationChosenOnMap = false
-                    mapViewModel.insertFavoriteAddress(
-                        FavoriteAddress(
-                        address = myAddress,
-                        latitude = latitudeDouble,
-                        longitude = longitudeDouble,
-                        latlon = (latitudeDouble.toString()+longitudeDouble.toString())
+                    mapViewModel.insertFavoriteAddressInternetCall(
+                        latitudeDouble,
+                        longitudeDouble
                     )
-                    )
-
+                    Toast.makeText(requireContext(),"Added to favorites.", Toast.LENGTH_SHORT).show()
+                } else{
+                    Toast.makeText(requireContext(),"Location is already in favorites.", Toast.LENGTH_SHORT).show()
                 }
             }
 
         } else if (args.isFromAlerts){
-            binding.btnAddToFavorites.visibility = View.VISIBLE
-            binding.btnAddToFavorites.setOnClickListener {
+            binding.btnSelectOrAddOnMap.visibility = View.VISIBLE
+            binding.btnSelectOrAddOnMap.setOnClickListener {
                 if (isLocationChosenOnMap) {
                     isLocationChosenOnMap = false
                     mapViewModel.putStringInSharedPreferences("ALERT_LATITUDE_FROM_MAP", latitudeDouble.toString())
                     mapViewModel.putStringInSharedPreferences("ALERT_LONGITUDE_FROM_MAP", longitudeDouble.toString())
                     mapViewModel.putStringInSharedPreferences("ALERT_ADDRESS" , myAddress)
+                    Toast.makeText(requireContext(),"Location selected.", Toast.LENGTH_SHORT).show()
+                } else{
+                    Toast.makeText(requireContext(),"Location is already selected.", Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         else if (args.isFromSettings){
 
-            binding.btnAddToFavorites.visibility = View.GONE
+            binding.btnSelectOrAddOnMap.setOnClickListener {
+                mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
+                mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
+                Toast.makeText(requireContext(),"Location selected.", Toast.LENGTH_SHORT).show()
+            }
+          //  binding.btnAddToFavorites.visibility = View.GONE
 
         }
+    }
+
+    private fun insertToFavorites() {
+        lifecycleScope.launch {
+            mapViewModel.retrofitStateWeather.collectLatest {
+                when (it){
+                    is RetrofitStateWeather.Loading -> {
+
+                    }
+                    is RetrofitStateWeather.OnFail -> {
+                        Log.i(TAG, "insertToFavorites: ${it.errorMessage}")
+                    }
+                    is RetrofitStateWeather.OnSuccess -> {
+                        mapViewModel.insertToFavorites(FavoriteAddress(
+                            address = myAddress,
+                            latitude = latitudeDouble,
+                            longitude = longitudeDouble,
+                            latlngString = (latitudeDouble.toString()+longitudeDouble.toString()),
+                            currentTemp = it.weatherData.current.temp,
+                            currentDescription = it.weatherData.current.weather[0].description,
+                            lastCheckedTime = System.currentTimeMillis(),
+                            icon = it.weatherData.current.weather[0].icon
+                        ))
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun startLottieAnimation(animationView: LottieAnimationView, animationName: String) {
+        animationView.setAnimation(animationName)
+        animationView.repeatCount = LottieDrawable.INFINITE
+        animationView.repeatMode = LottieDrawable.RESTART
+        animationView.playAnimation()
     }
 
     override fun onPause() {

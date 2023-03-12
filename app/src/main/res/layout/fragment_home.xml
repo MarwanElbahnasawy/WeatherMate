@@ -1,141 +1,298 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.home.HomeFragment">
+    android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/imgLoading"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    <!-- Current weather data -->
-    <TextView
-        android:id="@+id/textViewCurrentTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Temperature"
-        android:textSize="24sp"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
         />
 
-    <TextView
-        android:id="@+id/textViewCurrentDateTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Current Date and Time"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewCurrentTemp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewHumidity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Humidity"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewCurrentDateTime"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewWindSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wind Speed"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewHumidity"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewPressure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pressure"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewWindSpeed"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewClouds"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clouds"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewPressure"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <TextView
-        android:id="@+id/textViewCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="City"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewClouds"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-        <ImageView
-            android:id="@+id/imageViewWeatherIcon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-    <TextView
-        android:id="@+id/textViewWeatherDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weather Description"
-        android:textSize="16sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewCity"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"/>
-
-    <!-- Hourly forecast -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewHourlyForecast"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="horizontal"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewWeatherDescription"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        />
-
-    <!-- Daily forecast -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewDailyForecast"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewHourlyForecast"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        />
+        <ScrollView
+            android:id="@+id/scrollViewIDHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="always"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:context=".presentation.home.HomeFragment">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayoutHomeInside"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textViewCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="20dp"
+                    android:elevation="20dp"
+                    android:text="@string/unknown"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewCurrentTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="Current Temperature"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewCity" />
+
+                <TextView
+                    android:id="@+id/textLastCheckedAt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="@string/lastCheckedAt"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTemp" />
+
+                <TextView
+                    android:id="@+id/textViewDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="Date"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textLastCheckedAt" />
+
+                <TextView
+                    android:id="@+id/textViewTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="Time"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
+
+                <TextView
+                    android:id="@+id/textViewWeatherDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="Weather Description"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTime" />
+
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/imageViewWeatherIcon"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:layout_marginBottom="-50dp"
+                    android:elevation="20dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textViewWeatherDescription"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/verticalBarrier"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewHourlyForecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    android:overScrollMode="always"
+                    android:padding="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewWeatherIcon" />
+
+                <!-- Daily forecast -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewDailyForecast"
+                    android:layout_width="411dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:overScrollMode="always"
+
+                    android:padding="16dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewHourlyForecast" />
+
+                <androidx.constraintlayout.widget.Barrier
+                    android:id="@+id/verticalBarrier"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:barrierDirection="right"
+                    app:constraint_referenced_ids="textViewCurrentTemp,
+        textViewWeatherDescription, textViewDate, textViewTime"
+                    tools:layout_editor_absoluteX="286dp" />
+
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:cardCornerRadius="26dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/recyclerViewDailyForecast">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/containerLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_background_color_gray">
+
+                        <ImageView
+                            android:id="@+id/imgPressure"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/pressure"
+                            app:layout_constraintEnd_toStartOf="@+id/imgHumidity"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvPressure"
+                            android:textColor="@color/black"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/pressure"
+                            app:layout_constraintEnd_toEndOf="@+id/imgPressure"
+                            app:layout_constraintStart_toStartOf="@+id/imgPressure"
+                            app:layout_constraintTop_toBottomOf="@+id/imgPressure" />
+
+
+                        <ImageView
+                            android:id="@+id/imgHumidity"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/humidity"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/imgPressure"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvHumidity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="10dp"
+                            android:text="@string/humidity"
+                            app:layout_constraintEnd_toEndOf="@+id/imgHumidity"
+                            app:layout_constraintStart_toStartOf="@+id/imgHumidity"
+                            app:layout_constraintTop_toBottomOf="@+id/imgHumidity" />
+
+                        <ImageView
+                            android:id="@+id/imgCloudiness"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/cloudiness"
+                            app:layout_constraintEnd_toEndOf="@+id/imgPressure"
+                            app:layout_constraintStart_toStartOf="@+id/imgPressure"
+                            app:layout_constraintTop_toBottomOf="@+id/tvPressure" />
+
+                        <TextView
+                            android:id="@+id/tvCloudiness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:text="Cloudiness"
+                            app:layout_constraintEnd_toEndOf="@+id/imgPressure"
+                            app:layout_constraintStart_toStartOf="@+id/imgPressure"
+                            app:layout_constraintTop_toBottomOf="@+id/imgCloudiness" />
+
+                        <ImageView
+                            android:id="@+id/imgWind"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"
+                            android:layout_marginTop="10dp"
+                            android:src="@drawable/wind"
+                            app:layout_constraintEnd_toEndOf="@+id/imgHumidity"
+                            app:layout_constraintStart_toStartOf="@+id/imgHumidity"
+                            app:layout_constraintTop_toBottomOf="@+id/tvHumidity" />
+
+                        <TextView
+                            android:id="@+id/tvWind"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:text="@string/wind"
+                            app:layout_constraintEnd_toEndOf="@+id/imgHumidity"
+                            app:layout_constraintStart_toStartOf="@+id/imgHumidity"
+                            app:layout_constraintTop_toBottomOf="@+id/imgWind" />
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.cardview.widget.CardView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

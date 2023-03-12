@@ -1,9 +1,12 @@
 package com.example.weathermate.presentation.initial_preferences
 
 import android.Manifest
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.location.Geocoder
 import android.location.Location
@@ -15,12 +18,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieDrawable
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentInitialPreferencesBinding
@@ -34,6 +41,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.*
+import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.util.*
 
 
@@ -42,20 +50,18 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
     private val TAG = "commonnn"
 
     private val PERMISSION_LOCATION_ID_INITIAL_PREFERENCES = 111
-
-    lateinit var binding: FragmentInitialPreferencesBinding
-
+    private lateinit var binding: FragmentInitialPreferencesBinding
     private lateinit var myMap: GoogleMap
     private var longitudeDouble: Double = 0.0
     private var latitudeDouble: Double = 0.0
-
     lateinit var geocoder: Geocoder
-
     private var isLocationSelectedFromMap = false
     private var isClearing = false
-
     private lateinit var initialPreferencesViewModel: InitialPreferencesViewModel
     private lateinit var mapManager: MapManager
+    private var selectedLanguage = ""
+    private var isMapSelected = false
+    private var isGPSSelected = false
 
 
     override fun onCreateView(
@@ -79,7 +85,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
         initFrag()
 
-        activateGPSAndMapRadioButtonsClickListeners()
+        activateButtonsListeners()
 
         mapManager.checkPermissionsAndIfLocationIsEnabled()
 
@@ -100,28 +106,56 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
     }
 
+    private fun activateButtonsListeners() {
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+
+        binding.btnEnglish.setOnClickListener {
+            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            selectedLanguage = "english"
+        }
+        binding.btnArabic.setOnClickListener {
+            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            selectedLanguage = "arabic"
+        }
+
+
+        binding.btnMap.setOnClickListener {
+            binding.btnMap.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnGPS.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+                showMapComponents(mapFragment.requireView(), true)
+            isMapSelected = true
+            isGPSSelected = false
+        }
+
+        binding.btnGPS.setOnClickListener {
+            binding.btnGPS.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnMap.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
+                mapManager.checkPermissionsAndIfLocationIsEnabled()
+                showMapComponents(mapFragment.requireView(), false)
+            isGPSSelected = true
+            isMapSelected = false
+        }
+    }
+
 
     private fun initFrag() {
         mapManager = MapManager(requireContext(), this)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
-    }
 
-    private fun activateGPSAndMapRadioButtonsClickListeners() {
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        startLottieAnimation(binding.imageViewDummy , "settings2.json")
 
-        binding.rbMap.setOnClickListener {
-            if (binding.rbMap.isChecked) {
-                showMapComponents(mapFragment.requireView(), true)
-            }
-        }
+        startLottieAnimation(binding.imgSearchIcon , "search.json")
+        startLottieAnimation(binding.imgClearSearch , "delete.json")
 
-        binding.rbGps.setOnClickListener {
-            if (binding.rbGps.isChecked) {
-                mapManager.checkPermissionsAndIfLocationIsEnabled()
-                // initialPreferencesViewModel.checkPermissionsAndIfLocationIsEnabled()
-                showMapComponents(mapFragment.requireView(), false)
-            }
-        }
+        val animator = ObjectAnimator.ofFloat(binding.imgCurrentLocation, "rotation", 0f, 360f)
+        animator.repeatCount = ValueAnimator.INFINITE
+        animator.duration = 2000
+        animator.start()
     }
 
     private fun showMapComponents(mapView: View, show: Boolean) {
@@ -193,9 +227,9 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         longitudeDouble = mLastLocation.longitude
         latitudeDouble = mLastLocation.latitude
 
-        if (binding.rbGps.isChecked) {
-            savePreferencesAndGoToHomeFragment()
-        } else if (binding.rbMap.isChecked) { //from img current location clicking
+        if (isGPSSelected) {
+                savePreferencesAndGoToHomeFragment()
+        } else if (isMapSelected) { //from img current location clicking
 
             isLocationSelectedFromMap = true
 
@@ -256,70 +290,60 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
     @SuppressLint("MissingPermission")
     fun setUpMapUsingLocationString(locationName: String) {
         val addresses = geocoder.getFromLocationName(locationName, 1)
-        if (addresses != null) {
-            if (addresses.isNotEmpty()) {
-
+        if (addresses != null && addresses.isNotEmpty()) {
                 val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
                 moveMap(latLng)
-
-            }
         }
     }
-
 
     private fun activateSaveButtonListener() {
 
         binding.btnSavePreferences.setOnClickListener {
 
-            if (binding.rbGps.isChecked) {
-                mapManager.getLastLocation()
-            } else {
-                if (isLocationSelectedFromMap) {
-                    isLocationSelectedFromMap = false
-                    savePreferencesAndGoToHomeFragment()
+            if((isGPSSelected || isLocationSelectedFromMap) && !selectedLanguage.equals("")){
+                if (isGPSSelected) {
+                    binding.btnSavePreferences.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+                    mapManager.getLastLocation()
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "You haven't selected a location.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    if (isLocationSelectedFromMap) {
+                        binding.btnSavePreferences.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+
+                        isLocationSelectedFromMap = false
+                        savePreferencesAndGoToHomeFragment()
+                    }
                 }
-
+            } else{
+                Toast.makeText(requireContext(), "You need to choose your preferences.", Toast.LENGTH_SHORT).show()
             }
-
         }
 
     }
 
     private fun savePreferencesAndGoToHomeFragment() {
-        val selectedLanguage = when (binding.rgLanguage.checkedRadioButtonId) {
-            R.id.rb_english -> "english"
-            R.id.rb_arabic -> "arabic"
-            else -> null
-        }
+
+            initialPreferencesViewModel.putBooleanInSharedPreferences("preferences_set", true)
+            initialPreferencesViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
+            initialPreferencesViewModel.putStringInSharedPreferences("wind_speed_unit", "mps")
+            initialPreferencesViewModel.putStringInSharedPreferences("language", selectedLanguage)
+            initialPreferencesViewModel.putStringInSharedPreferences(
+                "latitude",
+                latitudeDouble.toString()
+            )
+            initialPreferencesViewModel.putStringInSharedPreferences(
+                "longitude",
+                longitudeDouble.toString()
+            )
 
 
+            val action =
+                InitialPreferencesFragmentDirections.actionPreferencesFragmentToNavigationHome()
+            val navOptions = NavOptions.Builder()
+                .setPopUpTo(R.id.nav_graph, true)
+                .build()
+            findNavController().navigate(action, navOptions)
 
-        initialPreferencesViewModel.putBooleanInSharedPreferences("preferences_set", true)
-        initialPreferencesViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
-        initialPreferencesViewModel.putStringInSharedPreferences("wind_speed_unit", "mph")
-        initialPreferencesViewModel.putStringInSharedPreferences("language", selectedLanguage!!)
-        initialPreferencesViewModel.putStringInSharedPreferences(
-            "latitude",
-            latitudeDouble.toString()
-        )
-        initialPreferencesViewModel.putStringInSharedPreferences(
-            "longitude",
-            longitudeDouble.toString()
-        )
+            changeLanguageAndLayout(selectedLanguage.substring(0, 2))
 
-
-        val action =
-            InitialPreferencesFragmentDirections.actionPreferencesFragmentToNavigationHome()
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.mobile_navigation, true)
-            .build()
-        findNavController().navigate(action, navOptions)
 
     }
 
@@ -338,7 +362,6 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
     private fun activateSearchIconListener() {
         binding.imgSearchIcon.setOnClickListener {
-            //setUpMapUsingLocationString(binding.etSearchMap.text.toString())
             setUpMapUsingLocationString(binding.etSearchMap.text.toString())
             binding.rvSearchSuggestions.adapter =
                 SearchSuggestionAdapter(mutableListOf(), object : InterfaceInitialPreferences {})
@@ -369,17 +392,18 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         latitudeDouble = latLng.latitude
         longitudeDouble = latLng.longitude
         val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-        if (addresses != null) {
+        if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0].getAddressLine(0)
             binding.etSearchMap.text = Editable.Factory.getInstance().newEditable(address)
             binding.rvSearchSuggestions.visibility = View.GONE
         }
     }
 
-
-    override fun onPause() {
-        super.onPause()
-        binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
+    private fun startLottieAnimation(animationView: LottieAnimationView, animationName: String) {
+        animationView.setAnimation(animationName)
+        animationView.repeatCount = LottieDrawable.INFINITE
+        animationView.repeatMode = LottieDrawable.RESTART
+        animationView.playAnimation()
     }
 
     override fun mapManagerRequestPermission() {
@@ -388,6 +412,26 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
     override fun mapManagerDealWithLocationResult(locationResult: LocationResult) {
         dealWithLocationResult(locationResult)
+    }
+
+    private fun changeLanguageAndLayout(language: String) {
+
+        val locale = Locale(language)
+        Locale.setDefault(locale)
+        val resources = context?.resources
+        val configuration = Configuration()
+        configuration.setLocale(locale)
+        resources?.updateConfiguration(configuration, resources.displayMetrics)
+
+        ViewCompat.setLayoutDirection(requireActivity().window.decorView, if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR)
+
+        activity?.recreate()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
     }
 
 }

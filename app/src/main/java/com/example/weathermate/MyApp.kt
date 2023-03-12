@@ -1,10 +1,12 @@
 package com.example.weathermate
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.weathermate.data.Repository
 import com.example.weathermate.data.local.LocalDataSource
 import com.example.weathermate.data.remote.RemoteDataSource
-import com.example.weathermate.util.HelperObject
+import com.example.weathermate.util.MyHelper
 
 class MyApp : Application() {
     companion object {
@@ -22,9 +24,10 @@ class MyApp : Application() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate() {
         super.onCreate()
-        HelperObject.createSharedPreferencesInstance(this)
+        MyHelper.createSharedPreferencesInstance(this)
         localDataSource = LocalDataSource.getInstance(this)
         remoteDataSource = RemoteDataSource.getInstance(this)
     }

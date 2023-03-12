@@ -16,14 +16,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
+import androidx.core.view.ViewCompat
+import com.example.weathermate.MainActivity
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.data.model.AlertItem
-import com.example.weathermate.data.remote.ApiService
-import com.example.weathermate.data.remote.RetrofitHelper
-import com.example.weathermate.data.remote.RetrofitState
+import com.example.weathermate.data.remote.RetrofitStateWeather
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -113,7 +114,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
         val latitude = intent.getStringExtra("ALERT_LATITUDE")!!
         val address = intent.getStringExtra("ALERT_ADDRESS")!!
 
-        val retrofitState = MutableStateFlow<RetrofitState>(RetrofitState.Loading)
+        val retrofitStateWeather = MutableStateFlow<RetrofitStateWeather>(RetrofitStateWeather.Loading)
 
         val myCoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -139,20 +140,20 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                     lon = longitude.toDouble(), language = "en")
 
                 data.catch {
-                    retrofitState.value = RetrofitState.onFail(Throwable("Error retrieving data"))
+                    retrofitStateWeather.value = RetrofitStateWeather.OnFail(Throwable("Error retrieving data"))
                 }
                     .collectLatest{
-                        retrofitState.value = RetrofitState.onSuccess(it)
+                        retrofitStateWeather.value = RetrofitStateWeather.OnSuccess(it)
                     }
 
 
-                retrofitState.collectLatest {
+                retrofitStateWeather.collectLatest {
 
                     when (it) {
-                        is RetrofitState.onSuccess -> {
-                            var eventWeather = "There are no warnings at the moment"
+                        is RetrofitStateWeather.OnSuccess -> {
+                            var eventWeather = context?.getString(R.string.noWarnings)
                             if (it.weatherData.alerts != null) {
-                                eventWeather = "Warning: " + it.weatherData.alerts.get(0).event
+                                eventWeather = context?.getString(R.string.warningAlert) + it.weatherData.alerts.get(0).event
                             }
 
 
@@ -177,21 +178,72 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                                 )
                             }
 
+                            val intent = Intent(context, MainActivity::class.java)
+                            val pendingIntent = PendingIntent.getActivity(
+                                context,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                            )
 
                             val builder = NotificationCompat.Builder(context!!, "my_channel_id")
-                                .setSmallIcon(R.drawable.baseline_add_alert_24)
+                                .setSmallIcon(R.drawable.weathermateicongenerated)
                                 .setContentTitle("Weather Alert")
-                                .setContentText("$eventWeather at $address.")
+                                .setContentText("$eventWeather ${context?.getString(R.string.at)} $address.")
                                 .setPriority(NotificationCompat.PRIORITY_MAX)
-                                .addAction(R.drawable.baseline_close_24, "Dismiss", dismissPendingIntent)
+                                .setContentIntent(pendingIntent)
+                                .addAction(R.drawable.baseline_close_24, context?.getString(R.string.dismissAlert), dismissPendingIntent)
 
 
                             notificationManager.notify(0, builder.build())
 
                             myCoroutineScope.cancel()
                         }
-                        is RetrofitState.onFail -> {
-                            Log.i(TAG, it.errorMessage.toString())
+                        is RetrofitStateWeather.OnFail -> {
+
+                            val eventWeather = context?.getString(R.string.internetDisconnectedAlert)
+
+                            val dismissIntent = Intent(context, DismissReceiver::class.java).apply {
+                                putExtra("notification_id", 0)
+                            }
+
+
+                            val dismissPendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                PendingIntent.getBroadcast(
+                                    context,
+                                    0,
+                                    dismissIntent,
+                                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                                )
+                            } else {
+                                PendingIntent.getBroadcast(
+                                    context,
+                                    0,
+                                    dismissIntent,
+                                    0
+                                )
+                            }
+
+                            val intent = Intent(context, MainActivity::class.java)
+                            val pendingIntent = PendingIntent.getActivity(
+                                context,
+                                0,
+                                intent,
+                                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                            )
+
+                            val builder = NotificationCompat.Builder(context!!, "my_channel_id")
+                                .setSmallIcon(R.drawable.weathermateicongenerated)
+                                .setContentTitle("Weather Alert")
+                                .setContentText(eventWeather)
+                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                                .setContentIntent(pendingIntent)
+                                .addAction(R.drawable.baseline_close_24, context?.getString(R.string.dismissAlert), dismissPendingIntent)
+
+
+                            notificationManager.notify(0, builder.build())
+
+                            myCoroutineScope.cancel()
                         }
                         else -> {}
                     }
@@ -207,33 +259,36 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                     lon = longitude.toDouble(), language = "en")
 
                 data.catch {
-                    retrofitState.value = RetrofitState.onFail(Throwable("Error retrieving data"))
+                    retrofitStateWeather.value = RetrofitStateWeather.OnFail(Throwable("Error retrieving data"))
                 }
                     .collectLatest{
-                        retrofitState.value = RetrofitState.onSuccess(it)
+                        retrofitStateWeather.value = RetrofitStateWeather.OnSuccess(it)
                     }
 
 
-                retrofitState.collectLatest {
+                retrofitStateWeather.collectLatest {
 
                     when (it) {
-                        is RetrofitState.onSuccess -> {
-                            var eventWeather = "There are no warnings at the moment"
+                        is RetrofitStateWeather.OnSuccess -> {
+                            var eventWeather = context?.getString(R.string.noWarnings)
                             if (it.weatherData.alerts != null) {
-                                eventWeather = "Warning: " + it.weatherData.alerts.get(0).event
+                                eventWeather = context?.getString(R.string.warningAlert) + it.weatherData.alerts.get(0).event
                             }
 
                             val inflater = LayoutInflater.from(context)
                             val alarmLayout = inflater.inflate(R.layout.alarm_layout, null)
 
                             val params = WindowManager.LayoutParams(
-                                WindowManager.LayoutParams.MATCH_PARENT,
-                                WindowManager.LayoutParams.WRAP_CONTENT,
+                                dpToPx(350, context!!),
+                                dpToPx(150, context!!),
                                 WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
                                 PixelFormat.TRANSLUCENT
                             )
-                            params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                            params.gravity = Gravity.TOP or Gravity.CENTER
+                            params.y = dpToPx(50, context!!)
+                            alarmLayout.findViewById<ImageView>(R.id.imgViewWeatherMate).setImageResource(R.drawable.weathermateicongenerated)
+
 
                             val dismissButton = alarmLayout.findViewById<Button>(R.id.dismissButton)
                             dismissButton.setOnClickListener {
@@ -246,8 +301,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                             }
 
                             val tv_alarm = alarmLayout.findViewById<TextView>(R.id.tv_alarm)
-                            tv_alarm.text = "$eventWeather at $address."
-
+                            tv_alarm.text = "$eventWeather ${context?.getString(R.string.at)} $address."
 
                             val windowManager =
                                 context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
@@ -264,8 +318,50 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                             myCoroutineScope.cancel()
 
                         }
-                        is RetrofitState.onFail -> {
-                            Log.i(TAG, it.errorMessage.toString())
+                        is RetrofitStateWeather.OnFail -> {
+                            val eventWeather = context?.getString(R.string.internetDisconnectedAlert)
+
+                            val inflater = LayoutInflater.from(context)
+                            val alarmLayout = inflater.inflate(R.layout.alarm_layout, null)
+
+                            val params = WindowManager.LayoutParams(
+                                dpToPx(350, context!!),
+                                dpToPx(150, context!!),
+                                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                                PixelFormat.TRANSLUCENT
+                            )
+                            params.gravity = Gravity.TOP or Gravity.CENTER
+                            params.y = dpToPx(50, context!!)
+                            alarmLayout.findViewById<ImageView>(R.id.imgViewWeatherMate).setImageResource(R.drawable.weathermateicongenerated)
+
+                            val dismissButton = alarmLayout.findViewById<Button>(R.id.dismissButton)
+                            dismissButton.setOnClickListener {
+
+                                ringtone?.stop()
+
+                                val windowManager =
+                                    context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                                windowManager.removeViewImmediate(alarmLayout)
+                            }
+
+                            val tv_alarm = alarmLayout.findViewById<TextView>(R.id.tv_alarm)
+                            tv_alarm.text = eventWeather
+
+
+                            val windowManager =
+                                context?.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+                            withContext(Dispatchers.Main) {
+                                windowManager.addView(alarmLayout, params)
+                            }
+
+
+                            val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+                            ringtone = RingtoneManager.getRingtone(context, alarmUri)
+                            ringtone?.play()
+
+                            myCoroutineScope.cancel()
                         }
                         else -> {}
                     }
@@ -275,6 +371,11 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
 
 
+    }
+
+    fun dpToPx(dp: Int , context: Context): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
     }
 }
 

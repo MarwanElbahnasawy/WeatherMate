@@ -2,8 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@id/navigation_home">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/navigation_home"
@@ -70,6 +70,18 @@
         <action
             android:id="@+id/action_navigation_alerts_to_mapFragment"
             app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.example.weathermate.presentation.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+        <action
+            android:id="@+id/action_splashFragment_to_navigation_preferences"
+            app:destination="@id/navigation_preferences" />
     </fragment>
 
 </navigation>

@@ -3,36 +3,100 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="26dp"
-    android:layout_margin="16dp"
+    android:layout_height="175dp"
+    android:elevation="10dp"
+    android:layout_margin="20dp"
+    app:cardCornerRadius="30dp"
+
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="30dp">
+        android:layout_height="match_parent"
+        android:minHeight="30dp"
+        android:background="@drawable/custom_background_color_gray"
+        >
 
         <TextView
             android:id="@+id/tv_addressName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:text="TextView"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintStart_toStartOf="@+id/constraintLayout"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/img_deleteFavorite"
+        <TextView
+            android:id="@+id/tvTemp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/constraintLayout"
-            app:layout_constraintEnd_toEndOf="@+id/constraintLayout"
-            app:layout_constraintTop_toTopOf="@+id/constraintLayout"
-            app:srcCompat="@drawable/baseline_delete_24" />
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_addressName"
+            app:layout_constraintTop_toBottomOf="@+id/tv_addressName" />
+
+        <TextView
+            android:id="@+id/tvDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvTemp"
+            app:layout_constraintTop_toBottomOf="@+id/tvTemp" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/img_deleteFavorite"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvLastChecked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/lastCheckedAt"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvDescription"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="TextView"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/tvLastChecked"
+            app:layout_constraintTop_toBottomOf="@+id/tvLastChecked" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/imgWeather"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintEnd_toStartOf="@+id/img_deleteFavorite"
+            app:layout_constraintStart_toEndOf="@id/verticalBarrier"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/verticalBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="tv_addressName, tvLastChecked
+,tvDescription, tvTemp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
