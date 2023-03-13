@@ -63,5 +63,6 @@
     <string name="addedToFavorites">Added to favorites.</string>
     <string name="locationAlreadyInFavorites">Location is already in favorites.</string>
     <string name="choosePreferences">You need to choose your initial preferences.</string>
+    <string name="internetIsDisconnected">Internet is disconnected</string>
 
 </resources>

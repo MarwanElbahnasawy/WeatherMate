@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 
-class AlertsManager(private var context: Context) {
+class AlertsManager(private val context: Context) {
 
     private val TAG = "commonnn"
 
@@ -38,6 +38,7 @@ class AlertsManager(private var context: Context) {
         val unixTime = alert.startDT.toLong()
 
         if ((unixTime * 1000) > System.currentTimeMillis()) {
+
             if (alert.alertType == "notification") {
                 val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val intent = Intent(context, MyBroadcastReceiver::class.java)
@@ -98,6 +99,27 @@ class AlertsManager(private var context: Context) {
         }
 
 
+    }
+
+    fun cancelAlert(alert: AlertItem) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, MyBroadcastReceiver::class.java)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.getBroadcast(
+                context,
+                alert.idHashLongFromLonLatStartStringEndStringAlertType.toInt(),
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        } else {
+            PendingIntent.getBroadcast(
+                context,
+                alert.idHashLongFromLonLatStartStringEndStringAlertType.toInt(),
+                intent,
+                0
+            )
+        }
+        alarmManager.cancel(pendingIntent)
     }
 
 }

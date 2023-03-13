@@ -3,7 +3,9 @@ package com.example.weathermate
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -12,7 +14,7 @@ import com.example.weathermate.util.NetworkManager
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
 
     private lateinit var navController: NavController
 
@@ -36,6 +38,10 @@ class MainActivity : AppCompatActivity() {
         initMainActivity()
 
         mainViewModel.activateAlerts(this)
+
+        NetworkManager.setListener(this)
+
+
     }
 
     private fun checkIfLayoutShouldBeArabic() {
@@ -45,14 +51,16 @@ class MainActivity : AppCompatActivity() {
             val configuration = Configuration()
             configuration.setLocale(locale)
             resources.updateConfiguration(configuration, resources.displayMetrics)
+            fixTitlesOfBottomNavBar()
         }
         mainViewModel.putBooleanInSharedPreferences("isLayoutChangedBySettings", false)
     }
 
+    private fun fixTitlesOfBottomNavBar() {
+        binding.bottomNavView
+    }
+
     private fun initMainActivity() {
-
-
-
         navController = findNavController(R.id.nav_host_fragment)
         setUpNavBar()
         setBottomBarVisibility()
@@ -95,5 +103,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
+    override fun onNetworkStatusChanged(isConnected: Boolean) {
+        runOnUiThread {
+            if(isConnected){
+                binding.tvNetworkIndicator.visibility = View.GONE
+            } else{
+                binding.tvNetworkIndicator.visibility = View.VISIBLE
+            }
+        }
+    }
 }

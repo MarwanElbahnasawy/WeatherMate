@@ -13,6 +13,8 @@ object NetworkManager {
     private lateinit var connectivityManager: ConnectivityManager
     private var isNetworkConnected = false
 
+    private var listener  : NetworkListener? = null
+
     fun init(context: Context) {
         connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -44,5 +46,20 @@ object NetworkManager {
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         isNetworkConnected =
             capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+
+        notifyListeners()
+    }
+
+    fun setListener(listener: NetworkListener){
+        this.listener = listener
+        notifyListeners()
+    }
+
+    private fun notifyListeners() {
+        listener?.onNetworkStatusChanged(isNetworkConnected)
+    }
+
+    interface NetworkListener {
+        fun onNetworkStatusChanged(isConnected: Boolean)
     }
 }

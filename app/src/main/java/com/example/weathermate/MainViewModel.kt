@@ -13,6 +13,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     private val TAG = "commonnn"
 
+
     fun activateAlerts(activity: AppCompatActivity) {
         val alertsManager = AlertsManager(activity)
         viewModelScope.launch {
@@ -34,6 +35,10 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun isLayoutChangedBySettings(): Boolean {
         return repository.getBooleanFromSharedPreferences("isLayoutChangedBySettings", false)
+    }
+
+    fun getLangaugeInSharedPreference(): String {
+        return repository.getStringFromSharedPreferences("language","")
     }
 
 }

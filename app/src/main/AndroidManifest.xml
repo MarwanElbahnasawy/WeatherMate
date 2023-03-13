@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
@@ -52,9 +53,6 @@
         <receiver
             android:name=".alerts.view.DismissReceiver"
             android:exported="false">
-            <intent-filter>
-                <action android:name="com.example.testalarm.DISMISS_NOTIFICATION" />
-            </intent-filter>
         </receiver>
 
     </application>

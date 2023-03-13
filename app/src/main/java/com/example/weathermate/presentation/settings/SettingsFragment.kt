@@ -242,8 +242,6 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         configuration.setLocale(locale)
         resources?.updateConfiguration(configuration, resources.displayMetrics)
 
-        ViewCompat.setLayoutDirection(requireActivity().window.decorView, if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR)
-
         val bottomNavView = requireActivity().findViewById<AnimatedBottomBar>(R.id.bottom_nav_view)
         bottomNavView.selectTabAt(0,false)
 

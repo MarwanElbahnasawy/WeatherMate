@@ -62,5 +62,6 @@
     <string name="addedToFavorites">تمت الإضافة إلى المفضلة.</string>
     <string name="locationAlreadyInFavorites">الموقع موجود بالفعل في المفضلة.</string>
     <string name="choosePreferences">يجب عليك اختيار تفضيلاتك الأولية.</string>
+    <string name="internetIsDisconnected">لا يوجد اتصال بالانترنت</string>
 
 </resources>

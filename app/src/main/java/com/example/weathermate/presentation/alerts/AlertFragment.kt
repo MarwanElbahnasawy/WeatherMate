@@ -2,6 +2,7 @@ package com.example.weathermate.presentation.alerts
 
 
 import android.Manifest
+import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -32,6 +33,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
+import com.example.weathermate.alerts.view.AlertsManager
 import com.example.weathermate.data.model.AlertItem
 import com.example.weathermate.databinding.FragmentAlertBinding
 import com.example.weathermate.util.MyConverters
@@ -409,6 +411,7 @@ class AlertFragment : Fragment() , InterfaceAlerts {
 
     override fun onItemClickAlerts(alert: AlertItem) {
         lifecycleScope.launch {
+            AlertsManager(requireContext()).cancelAlert(alert)
             alertsVewModel.deleteAlert(alert)
         }
     }
