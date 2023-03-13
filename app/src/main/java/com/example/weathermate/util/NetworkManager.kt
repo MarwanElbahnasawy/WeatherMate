@@ -5,11 +5,9 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.view.View
-import com.example.weathermate.R
-import com.google.android.material.snackbar.Snackbar
 
 object NetworkManager {
+
     private lateinit var connectivityManager: ConnectivityManager
     private var isNetworkConnected = false
 
@@ -43,9 +41,11 @@ object NetworkManager {
     private fun updateNetworkStatus() {
 
         val activeNetwork = connectivityManager.activeNetwork
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
         val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork)
         isNetworkConnected =
-            capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            activeNetwork!= null && capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) && activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting
+
 
         notifyListeners()
     }

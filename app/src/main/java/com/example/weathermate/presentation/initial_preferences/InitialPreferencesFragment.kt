@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -368,6 +369,9 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         binding.btnSavePreferences.setOnClickListener {
 
             if(NetworkManager.isInternetConnected()){
+
+                Log.i(TAG, "activateSaveButtonListener: connected")
+
                 if ((isGPSSelected || isLocationSelectedFromMap) && !selectedLanguage.equals("")) {
                     if (isGPSSelected) {
                         binding.btnSavePreferences.setBackgroundColor(
@@ -398,6 +402,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
                     ).show()
                 }
             } else{
+                Log.i(TAG, "activateSaveButtonListener: disconnected")
                 Toast.makeText(
                     requireContext(),
                     requireContext().getString(R.string.internetDisconnected),
