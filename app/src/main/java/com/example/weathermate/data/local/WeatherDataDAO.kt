@@ -15,18 +15,11 @@ interface WeatherDataDAO {
 
     @Transaction
     suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
-        Log.i("commonnn", "insertOrUpdateWeatherData000 weatherData: $weatherData")
         val existingWeatherData = getWeatherDataFromDB()
-        Log.i("commonnn", "insertOrUpdateWeatherData1: $existingWeatherData")
         existingWeatherData?.let {
-            Log.i("commonnn", "insertOrUpdateWeatherData2: $existingWeatherData")
             deleteWeatherData(it)
-            Log.i("commonnn", "insertOrUpdateWeatherData3: $existingWeatherData")
         }
-        Log.i("commonnn", "insertOrUpdateWeatherData4: $existingWeatherData")
-        Log.i("commonnn", "insertOrUpdateWeatherData44: $weatherData")
         insertWeatherData(weatherData)
-        Log.i("commonnn", "insertOrUpdateWeatherData5: $existingWeatherData")
     }
 
     @Delete

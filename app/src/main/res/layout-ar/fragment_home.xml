@@ -155,7 +155,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageViewWeatherIcon" />
 
-                <!-- Daily forecast -->
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewDailyForecast"
                     android:layout_width="411dp"

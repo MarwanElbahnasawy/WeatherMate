@@ -2,10 +2,9 @@ package com.example.weathermate
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -33,6 +32,8 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        changeBottomBarTabSelection()
+
         checkIfLayoutShouldBeArabic()
 
         initMainActivity()
@@ -42,6 +43,13 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
         NetworkManager.setListener(this)
 
 
+
+    }
+
+    private fun changeBottomBarTabSelection() {
+        if (mainViewModel.isLayoutChangedBySettings()){
+            binding.bottomNavView.selectTabAt(3)
+        }
     }
 
     private fun checkIfLayoutShouldBeArabic() {
@@ -51,37 +59,33 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
             val configuration = Configuration()
             configuration.setLocale(locale)
             resources.updateConfiguration(configuration, resources.displayMetrics)
-            fixTitlesOfBottomNavBar()
-        }
+            setTitlesOfNavBarToArabic()
+        } 
+        
+        setUpNavBar()
         mainViewModel.putBooleanInSharedPreferences("isLayoutChangedBySettings", false)
     }
-
-    private fun fixTitlesOfBottomNavBar() {
-        binding.bottomNavView
-    }
-
     private fun initMainActivity() {
         navController = findNavController(R.id.nav_host_fragment)
-        setUpNavBar()
         setBottomBarVisibility()
     }
 
     private fun setUpNavBar() {
         binding.bottomNavView.onTabSelected = {
-            when (it.id) {
-                R.id.navigation_home -> {
+            when (it) {
+                binding.bottomNavView.tabs[0] -> {
                     while (navController.popBackStack()){}
                     navController.navigate(R.id.navigation_home)
                 }
-                R.id.navigation_favorites -> {
+                binding.bottomNavView.tabs[1] -> {
                     while (navController.popBackStack()){}
                     navController.navigate(R.id.navigation_favorites)
                 }
-                R.id.navigation_alerts -> {
+                binding.bottomNavView.tabs[2] -> {
                     while (navController.popBackStack()){}
                     navController.navigate(R.id.navigation_alerts)
                 }
-                R.id.navigation_settings -> {
+                binding.bottomNavView.tabs[3] -> {
                     while (navController.popBackStack()){}
                     navController.navigate(R.id.navigation_settings)
                 }
@@ -112,4 +116,25 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
             }
         }
     }
+
+    private fun setTitlesOfNavBarToArabic() {
+        for (i in 0..3) {
+            binding.bottomNavView.removeTab(binding.bottomNavView.tabs[0])
+        }
+
+        val bottomBarTab1 = binding.bottomNavView.createTab(R.drawable.ic_home_black_24dp, getString(R.string.title_home))
+        val bottomBarTab2 = binding.bottomNavView.createTab(R.drawable.ic_baseline_bookmark_24, getString(R.string.title_favorites))
+        val bottomBarTab3 = binding.bottomNavView.createTab(R.drawable.ic_notifications_black_24dp, getString(R.string.title_alerts))
+        val bottomBarTab4 = binding.bottomNavView.createTab(R.drawable.ic_baseline_settings_24, getString(R.string.title_settings))
+
+        binding.bottomNavView.addTab(bottomBarTab1)
+        binding.bottomNavView.addTab(bottomBarTab2)
+        binding.bottomNavView.addTab(bottomBarTab3)
+        binding.bottomNavView.addTab(bottomBarTab4)
+
+        binding.bottomNavView.selectTabAt(0)
+
+        setUpNavBar()
+    }
+
 }

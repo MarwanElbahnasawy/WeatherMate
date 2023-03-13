@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -242,8 +243,7 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         configuration.setLocale(locale)
         resources?.updateConfiguration(configuration, resources.displayMetrics)
 
-        val bottomNavView = requireActivity().findViewById<AnimatedBottomBar>(R.id.bottom_nav_view)
-        bottomNavView.selectTabAt(0,false)
+        ViewCompat.setLayoutDirection(requireActivity().window.decorView, if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR)
 
         settingsViewModel.putBooleanInSharedPreferences("isLayoutChangedBySettings", true)
 

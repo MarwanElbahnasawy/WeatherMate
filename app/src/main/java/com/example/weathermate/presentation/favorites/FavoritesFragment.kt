@@ -97,44 +97,6 @@ class FavoritesFragment : Fragment() , InterfaceFavorites {
         }
     }
 
-/*    private fun loadFavorites() {
-
-        lifecycleScope.launch {
-
-            val favoritesObserver = Observer<List<FavoriteAddress>> { favorites ->
-                favoritesViewModel.loadAndReloadFavoritesOnline(favorites)
-            }
-
-            favoritesViewModel.observeFavorites().observe(viewLifecycleOwner, favoritesObserver)
-
-
-            favoritesViewModel.retrofitStateFavorites.collectLatest {
-                when (it) {
-                    is RetrofitStateFavorites.Loading -> {
-
-                        binding.imgLoading.visibility = View.VISIBLE
-                        startLottieAnimation(binding.imgLoading, "loading.json")
-                        binding.scrollViewFavorites.visibility = View.GONE
-                    }
-                    is RetrofitStateFavorites.OnSuccess -> {
-
-                        favoritesViewModel.observeFavorites().removeObserver(favoritesObserver)
-                            favoritesViewModel.updateFavoritesDatabase(it.listFavoriteAddresses, viewLifecycleOwner, favoritesObserver)
-
-
-                            updateUi(it.listFavoriteAddresses)
-                            binding.scrollViewFavorites.visibility = View.VISIBLE
-                            binding.imgLoading.visibility = View.GONE
-                            binding.imgLoading.pauseAnimation()
-                    }
-                    is RetrofitStateFavorites.OnFail -> {
-                        Log.i(TAG, it.errorMessage.toString())
-                    }
-                }
-            }
-        }
-    }*/
-
     private fun updateUi(listFavoriteAddresses: List<FavoriteAddress>) {
 
         val mlayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
