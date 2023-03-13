@@ -1,17 +1,27 @@
 package com.example.weathermate.presentation.splash
 
 import android.animation.Animator
+import android.animation.ValueAnimator
+import android.net.ConnectivityManager
+import android.net.Network
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import android.widget.ViewAnimator
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentSplashBinding
+import com.example.weathermate.util.NetworkManager
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
 
@@ -55,7 +65,25 @@ class SplashFragment : Fragment() {
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.nav_graph, true)
                         .build()
-                    findNavController().navigate(action, navOptions)
+
+                    val toast = Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(R.string.internetDisconnectedFirstTimeInApp),
+                        Toast.LENGTH_LONG
+                    )
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        while (true) {
+                            if (NetworkManager.isInternetConnected()) {
+                                toast.cancel()
+                                findNavController().navigate(action, navOptions)
+                                break
+                            } else {
+                                toast.show()
+                            }
+                            delay(1000)
+                        }
+                    }
                 }
             }
 

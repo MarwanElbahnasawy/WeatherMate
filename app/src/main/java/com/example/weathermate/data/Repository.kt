@@ -44,7 +44,7 @@ class Repository (var localDataSource: LocalDataSource, var remoteDataSource: Re
     }
 
     //Favorites
-    fun getAllFavoriteAddresses(): LiveData<List<FavoriteAddress>> {
+    fun getAllFavoriteAddresses(): List<FavoriteAddress> {
         return localDataSource.getAllFavoriteAddresses()
     }
 
@@ -54,6 +54,10 @@ class Repository (var localDataSource: LocalDataSource, var remoteDataSource: Re
 
     suspend fun deleteFavoriteAddress(address: FavoriteAddress){
         localDataSource.deleteFavoriteAddress(address)
+    }
+
+    suspend fun deleteAllFavoriteAddresses(){
+        localDataSource.deleteAllFavoriteAddresses()
     }
 
     //Alerts

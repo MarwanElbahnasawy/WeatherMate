@@ -10,7 +10,8 @@ data class WeatherData(
     val hourly: List<Hourly>,
     val lat: Double,
     val lon: Double,
-    val alerts: List<Alert>?
+    val alerts: List<Alert>?,
+    val addressName: String?
 //    val timezone: String,
 //    val timezone_offset: Int
 )

@@ -54,5 +54,13 @@
     <string name="startsAt">يبدأ في:</string>
     <string name="endsAt">ينتهي عند:</string>
     <string name="at">في</string>
+    <string name="internetDisconnected">برجاء التحقق من الاتصال بالانترنت.</string>
+    <string name="internetDisconnectedFirstTimeInApp">برجاء تمكين الاتصال بالإنترنت عند الإطلاق الأول.</string>
+    <string name="locationSelected">الموقع المحدد.</string>
+    <string name="locationIsAlreadySelected">الموقع محدد بالفعل.</string>
+    <string name="turnOnLocation">برجاء السماح بتحديد الموقع</string>
+    <string name="addedToFavorites">تمت الإضافة إلى المفضلة.</string>
+    <string name="locationAlreadyInFavorites">الموقع موجود بالفعل في المفضلة.</string>
+    <string name="choosePreferences">يجب عليك اختيار تفضيلاتك الأولية.</string>
 
 </resources>

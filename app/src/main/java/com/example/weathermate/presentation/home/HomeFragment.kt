@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -71,8 +70,6 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.navigation_home)
         }
 
-
-
     }
 
     private fun checkInternet() {
@@ -83,12 +80,21 @@ class HomeFragment : Fragment() {
             animateImages()
         } else{
             lifecycleScope.launch(Dispatchers.Main) {
+
+                binding.imgLoading.visibility = View.VISIBLE
+                startLottieAnimation(binding.imgLoading, "loading.json")
+                binding.scrollViewIDHome.visibility = View.GONE
+
                 val savedWeatherData = homeViewModel.getWeatherDataFromDatabase()
                 if (savedWeatherData != null){
                     homeViewModel.initPreferencesManager(requireContext())
                     homeViewModel.setLatitudeAndLongitude()
                     updateUi(savedWeatherData)
                     animateImages()
+
+                    binding.scrollViewIDHome.visibility = View.VISIBLE
+                    binding.imgLoading.visibility = View.GONE
+                    binding.imgLoading.pauseAnimation()
                 }
             }
 
@@ -111,12 +117,13 @@ class HomeFragment : Fragment() {
                         binding.imgLoading.visibility = View.GONE
                         binding.imgLoading.pauseAnimation()
 
-                        homeViewModel.insertOrUpdateWeatherData(it.weatherData)
+                        homeViewModel.insertOrUpdateWeatherData(it.weatherData , homeViewModel.getAddressNameFromLatLng(it.weatherData.lat,it.weatherData.lon))
 
                     }
                     is RetrofitStateWeather.OnFail -> {
                         Log.i(TAG, it.errorMessage.toString())
                     }
+                    else -> {}
                 }
             }
         }
@@ -138,7 +145,7 @@ class HomeFragment : Fragment() {
             }"
         binding.tvCloudiness.text =
             "${MyConverters.convertHumidtyOrPressureOrTemperature(weatherData.current.clouds)} %"
-        homeViewModel.updateCityName(isAdded)
+        homeViewModel.updateCityName(isAdded, weatherData.addressName)
         binding.textViewWeatherDescription.text =
             weatherData.current.weather[0].description.capitalize()
 
@@ -176,6 +183,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateCityName(cityName: String) {
+
         binding.textViewCity.text = cityName
     }
 

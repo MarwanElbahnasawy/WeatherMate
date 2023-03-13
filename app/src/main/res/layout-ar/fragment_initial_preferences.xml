@@ -214,9 +214,9 @@
         android:id="@+id/imgCurrentLocation"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardViewSavePreferences"
-        app:layout_constraintEnd_toEndOf="@+id/map"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardViewSavePreferences"
         app:srcCompat="@drawable/baseline_gps_fixed_24" />
 

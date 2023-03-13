@@ -35,6 +35,7 @@ import com.example.weathermate.R
 import com.example.weathermate.data.model.AlertItem
 import com.example.weathermate.databinding.FragmentAlertBinding
 import com.example.weathermate.util.MyConverters
+import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -228,13 +229,20 @@ class AlertFragment : Fragment() , InterfaceAlerts {
     }
 
     private fun tvLocationClicked() {
-        alertsVewModel.putBooleanInSharedPreferences("tvLocationClicked", true)
 
-        findNavController().navigate(
-            AlertFragmentDirections.actionNavigationAlertsToMapFragment(
-                isFromAlerts = true
+        if (NetworkManager.isInternetConnected()){
+            alertsVewModel.putBooleanInSharedPreferences("tvLocationClicked", true)
+
+            findNavController().navigate(
+                AlertFragmentDirections.actionNavigationAlertsToMapFragment(
+                    isFromAlerts = true
+                )
             )
-        )
+        } else{
+            Toast.makeText(requireContext(), requireContext().getString(R.string.internetDisconnected), Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
     private fun saveClicked(textViewStartDate: TextView, textViewEndDate: TextView) {

@@ -34,6 +34,7 @@ import com.example.weathermate.databinding.FragmentInitialPreferencesBinding
 import com.example.weathermate.presentation.map.MapManager
 import com.example.weathermate.presentation.map.MapManagerInterface
 import com.example.weathermate.presentation.map.SearchSuggestionAdapter
+import com.example.weathermate.util.NetworkManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -104,6 +105,24 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
         addTextChangedListenerToTheSearchEditText()
 
+        disableOrEnableSearchBasedOnInternet()
+
+    }
+
+    private fun disableOrEnableSearchBasedOnInternet() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            while (true) {
+                if (NetworkManager.isInternetConnected()) {
+                    binding.etSearchMap.isEnabled = true
+                    binding.imgClearSearch.isEnabled = true
+                } else {
+                    binding.etSearchMap.isEnabled = false
+                    binding.imgClearSearch.isEnabled = false
+                    binding.rvSearchSuggestions.visibility = View.GONE
+                }
+                delay(250)
+            }
+        }
     }
 
     private fun activateButtonsListeners() {
@@ -111,32 +130,72 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
         binding.btnEnglish.setOnClickListener {
-            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnEnglish.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.myPurple
+                )
+            )
+            binding.btnArabic.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
             selectedLanguage = "english"
         }
         binding.btnArabic.setOnClickListener {
-            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnArabic.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.myPurple
+                )
+            )
+            binding.btnEnglish.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
             selectedLanguage = "arabic"
         }
 
 
         binding.btnMap.setOnClickListener {
-            binding.btnMap.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnGPS.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnMap.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.myPurple
+                )
+            )
+            binding.btnGPS.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
 
-                showMapComponents(mapFragment.requireView(), true)
+            showMapComponents(mapFragment.requireView(), true)
             isMapSelected = true
             isGPSSelected = false
         }
 
         binding.btnGPS.setOnClickListener {
-            binding.btnGPS.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnMap.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnGPS.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.myPurple
+                )
+            )
+            binding.btnMap.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.white
+                )
+            )
 
-                mapManager.checkPermissionsAndIfLocationIsEnabled()
-                showMapComponents(mapFragment.requireView(), false)
+            mapManager.checkPermissionsAndIfLocationIsEnabled()
+            showMapComponents(mapFragment.requireView(), false)
             isGPSSelected = true
             isMapSelected = false
         }
@@ -147,10 +206,10 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         mapManager = MapManager(requireContext(), this)
         geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-        startLottieAnimation(binding.imageViewDummy , "settings2.json")
+        startLottieAnimation(binding.imageViewDummy, "settings2.json")
 
-        startLottieAnimation(binding.imgSearchIcon , "search.json")
-        startLottieAnimation(binding.imgClearSearch , "delete.json")
+        startLottieAnimation(binding.imgSearchIcon, "search.json")
+        startLottieAnimation(binding.imgClearSearch, "delete.json")
 
         val animator = ObjectAnimator.ofFloat(binding.imgCurrentLocation, "rotation", 0f, 360f)
         animator.repeatCount = ValueAnimator.INFINITE
@@ -179,8 +238,16 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
             binding.imgSearchIcon.visibility = View.GONE
 
             myMap.setOnMapClickListener { latLng ->
-                setUpMapOnClick(latLng)
-                // initialPreferencesViewModel.setUpMapOnClick(latLng)
+
+                if (NetworkManager.isInternetConnected()) {
+                    setUpMapOnClick(latLng)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getText(R.string.internetDisconnected),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -228,7 +295,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         latitudeDouble = mLastLocation.latitude
 
         if (isGPSSelected) {
-                savePreferencesAndGoToHomeFragment()
+            savePreferencesAndGoToHomeFragment()
         } else if (isMapSelected) { //from img current location clicking
 
             isLocationSelectedFromMap = true
@@ -291,8 +358,8 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
     fun setUpMapUsingLocationString(locationName: String) {
         val addresses = geocoder.getFromLocationName(locationName, 1)
         if (addresses != null && addresses.isNotEmpty()) {
-                val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
-                moveMap(latLng)
+            val latLng = LatLng(addresses[0].latitude, addresses[0].longitude)
+            moveMap(latLng)
         }
     }
 
@@ -300,71 +367,119 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
 
         binding.btnSavePreferences.setOnClickListener {
 
-            if((isGPSSelected || isLocationSelectedFromMap) && !selectedLanguage.equals("")){
-                if (isGPSSelected) {
-                    binding.btnSavePreferences.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-                    mapManager.getLastLocation()
-                } else {
-                    if (isLocationSelectedFromMap) {
-                        binding.btnSavePreferences.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            if(NetworkManager.isInternetConnected()){
+                if ((isGPSSelected || isLocationSelectedFromMap) && !selectedLanguage.equals("")) {
+                    if (isGPSSelected) {
+                        binding.btnSavePreferences.setBackgroundColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.myPurple
+                            )
+                        )
+                        mapManager.getLastLocation()
+                    } else {
+                        if (isLocationSelectedFromMap) {
+                            binding.btnSavePreferences.setBackgroundColor(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.myPurple
+                                )
+                            )
 
-                        isLocationSelectedFromMap = false
-                        savePreferencesAndGoToHomeFragment()
+                            isLocationSelectedFromMap = false
+                            savePreferencesAndGoToHomeFragment()
+                        }
                     }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(R.string.choosePreferences),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } else{
-                Toast.makeText(requireContext(), "You need to choose your preferences.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
+
         }
 
     }
 
     private fun savePreferencesAndGoToHomeFragment() {
 
-            initialPreferencesViewModel.putBooleanInSharedPreferences("preferences_set", true)
-            initialPreferencesViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
-            initialPreferencesViewModel.putStringInSharedPreferences("wind_speed_unit", "mps")
-            initialPreferencesViewModel.putStringInSharedPreferences("language", selectedLanguage)
-            initialPreferencesViewModel.putStringInSharedPreferences(
-                "latitude",
-                latitudeDouble.toString()
-            )
-            initialPreferencesViewModel.putStringInSharedPreferences(
-                "longitude",
-                longitudeDouble.toString()
-            )
+        initialPreferencesViewModel.putBooleanInSharedPreferences("preferences_set", true)
+        initialPreferencesViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
+        initialPreferencesViewModel.putStringInSharedPreferences("wind_speed_unit", "mps")
+        initialPreferencesViewModel.putStringInSharedPreferences("language", selectedLanguage)
+        initialPreferencesViewModel.putStringInSharedPreferences(
+            "latitude",
+            latitudeDouble.toString()
+        )
+        initialPreferencesViewModel.putStringInSharedPreferences(
+            "longitude",
+            longitudeDouble.toString()
+        )
 
 
-            val action =
-                InitialPreferencesFragmentDirections.actionPreferencesFragmentToNavigationHome()
-            val navOptions = NavOptions.Builder()
-                .setPopUpTo(R.id.nav_graph, true)
-                .build()
-            findNavController().navigate(action, navOptions)
+        val action =
+            InitialPreferencesFragmentDirections.actionPreferencesFragmentToNavigationHome()
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.nav_graph, true)
+            .build()
+        findNavController().navigate(action, navOptions)
 
-            changeLanguageAndLayout(selectedLanguage.substring(0, 2))
+        changeLanguageAndLayout(selectedLanguage.substring(0, 2))
 
 
     }
 
     private fun activateImgCurrentLocation() {
         binding.imgCurrentLocation.setOnClickListener {
-            if (mapManager.isLocationEnabled()) {
-                mapManager.getLastLocation()
+
+            if (NetworkManager.isInternetConnected()) {
+                if (mapManager.isLocationEnabled()) {
+                    mapManager.getLastLocation()
+                } else {
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.turnOnLocation), Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+                }
             } else {
-                Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_SHORT).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getText(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
+
         }
 
     }
 
     private fun activateSearchIconListener() {
         binding.imgSearchIcon.setOnClickListener {
-            setUpMapUsingLocationString(binding.etSearchMap.text.toString())
-            binding.rvSearchSuggestions.adapter =
-                SearchSuggestionAdapter(mutableListOf(), object : InterfaceInitialPreferences {})
+
+            if (NetworkManager.isInternetConnected()) {
+                setUpMapUsingLocationString(binding.etSearchMap.text.toString())
+                binding.rvSearchSuggestions.adapter =
+                    SearchSuggestionAdapter(
+                        mutableListOf(),
+                        object : InterfaceInitialPreferences {})
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getText(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+
         }
 
     }
@@ -423,7 +538,10 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         configuration.setLocale(locale)
         resources?.updateConfiguration(configuration, resources.displayMetrics)
 
-        ViewCompat.setLayoutDirection(requireActivity().window.decorView, if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR)
+        ViewCompat.setLayoutDirection(
+            requireActivity().window.decorView,
+            if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR
+        )
 
         activity?.recreate()
 

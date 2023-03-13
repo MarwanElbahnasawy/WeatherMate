@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.weathermate.databinding.ActivityMainBinding
+import com.example.weathermate.util.NetworkManager
 import java.util.*
 
 
@@ -27,10 +28,10 @@ class MainActivity : AppCompatActivity() {
         val viewModelFactory = MainViewModelFactory(MyApp.getInstanceRepository())
         mainViewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
-        checkIfLayoutShouldBeArabic()
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        checkIfLayoutShouldBeArabic()
 
         initMainActivity()
 

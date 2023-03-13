@@ -25,7 +25,7 @@
     <string name="map">Map</string>
     <string name="search_map">Search for a location</string>
     <string name="google_maps_key" translatable="false">AIzaSyATC4Zk0_xofsFUTm0GRIyNej3syHx5oro</string>
-    <string name="openweathermap_key" translatable="false">04140387a0c9b9535e981afe74e9ac2a</string>
+    <string name="openweathermap_key" translatable="false">689a75dd3693a97fd187adbe169eb139</string>
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="cloudiness">Cloudiness</string>
@@ -55,5 +55,13 @@
     <string name="startsAt">Starts at:</string>
     <string name="endsAt">Ends at:</string>
     <string name="at">at</string>
+    <string name="internetDisconnected">Please check your internet connection.</string>
+    <string name="internetDisconnectedFirstTimeInApp">You need to enable internet connection for the first launch.</string>
+    <string name="locationSelected">Location selected.</string>
+    <string name="locationIsAlreadySelected">Location is already selected.</string>
+    <string name="turnOnLocation">Turn on location</string>
+    <string name="addedToFavorites">Added to favorites.</string>
+    <string name="locationAlreadyInFavorites">Location is already in favorites.</string>
+    <string name="choosePreferences">You need to choose your initial preferences.</string>
 
 </resources>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -19,10 +20,9 @@ import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentFavoritesBinding
 import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.remote.RetrofitStateFavorites
-import kotlinx.coroutines.Dispatchers
+import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import nl.joery.animatedbottombar.AnimatedBottomBar
 
 class FavoritesFragment : Fragment() , InterfaceFavorites {
@@ -44,12 +44,43 @@ class FavoritesFragment : Fragment() , InterfaceFavorites {
         super.onViewCreated(view, savedInstanceState)
         initFrag()
         activateFABFavorites()
-        loadFavorites()
+
+        listenToFavorites()
+        favoritesViewModel.loadFavorites()
+
+
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             findNavController().navigate(R.id.navigation_favorites)
         }
     }
+
+    private fun listenToFavorites() {
+        lifecycleScope.launch {
+            favoritesViewModel.retrofitStateFavorites.collectLatest {
+                when (it) {
+                    is RetrofitStateFavorites.Loading -> {
+
+                        binding.imgLoading.visibility = View.VISIBLE
+                        startLottieAnimation(binding.imgLoading, "loading.json")
+                        binding.scrollViewFavorites.visibility = View.GONE
+                    }
+                    is RetrofitStateFavorites.OnSuccess -> {
+
+                        updateUi(it.listFavoriteAddresses)
+                        binding.scrollViewFavorites.visibility = View.VISIBLE
+                        binding.imgLoading.visibility = View.GONE
+                        binding.imgLoading.pauseAnimation()
+                    }
+                    is RetrofitStateFavorites.OnFail -> {
+                        Log.i(TAG, it.errorMessage.toString())
+                    }
+                }
+            }
+        }
+
+    }
+
 
     private fun initFrag() {
         val favoritesViewModelFactory = FavoritesViewModelFactory(MyApp.getInstanceRepository())
@@ -58,43 +89,53 @@ class FavoritesFragment : Fragment() , InterfaceFavorites {
 
     private fun activateFABFavorites() {
         binding.fabFavorites.setOnClickListener {
-            findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToMapFragment(isFromFavorites = true))
+            if (NetworkManager.isInternetConnected()){
+                findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToMapFragment(isFromFavorites = true))
+            } else{
+                Toast.makeText(requireContext(), requireContext().getString(R.string.internetDisconnected), Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun loadFavorites() {
+/*    private fun loadFavorites() {
+
         lifecycleScope.launch {
 
-            favoritesViewModel.observeFavorites().observe(viewLifecycleOwner){
-                favoritesViewModel.reloadFavoritesOnline(it)
+            val favoritesObserver = Observer<List<FavoriteAddress>> { favorites ->
+                favoritesViewModel.loadAndReloadFavoritesOnline(favorites)
             }
+
+            favoritesViewModel.observeFavorites().observe(viewLifecycleOwner, favoritesObserver)
 
 
             favoritesViewModel.retrofitStateFavorites.collectLatest {
                 when (it) {
                     is RetrofitStateFavorites.Loading -> {
+
                         binding.imgLoading.visibility = View.VISIBLE
                         startLottieAnimation(binding.imgLoading, "loading.json")
-                        binding.constraintLayoutFavorite.visibility = View.GONE
+                        binding.scrollViewFavorites.visibility = View.GONE
                     }
                     is RetrofitStateFavorites.OnSuccess -> {
+
+                        favoritesViewModel.observeFavorites().removeObserver(favoritesObserver)
+                            favoritesViewModel.updateFavoritesDatabase(it.listFavoriteAddresses, viewLifecycleOwner, favoritesObserver)
+
+
                             updateUi(it.listFavoriteAddresses)
-                            binding.constraintLayoutFavorite.visibility = View.VISIBLE
+                            binding.scrollViewFavorites.visibility = View.VISIBLE
                             binding.imgLoading.visibility = View.GONE
                             binding.imgLoading.pauseAnimation()
                     }
                     is RetrofitStateFavorites.OnFail -> {
                         Log.i(TAG, it.errorMessage.toString())
                     }
-                    else -> {}
                 }
             }
         }
-    }
+    }*/
 
     private fun updateUi(listFavoriteAddresses: List<FavoriteAddress>) {
-
-        Log.i(TAG, "updateUi111111: " + listFavoriteAddresses.size)
 
         val mlayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
@@ -110,18 +151,29 @@ class FavoritesFragment : Fragment() , InterfaceFavorites {
     }
 
     override fun onItemClickFavorites(favoriteAddress: FavoriteAddress) {
-        favoritesViewModel.putStringInSharedPreferences("latitude", favoriteAddress.latitude.toString())
-        favoritesViewModel.putStringInSharedPreferences("longitude", favoriteAddress.longitude.toString())
 
-        findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationHome())
+        if (NetworkManager.isInternetConnected()){
+            favoritesViewModel.putStringInSharedPreferences("latitude", favoriteAddress.latitude.toString())
+            favoritesViewModel.putStringInSharedPreferences("longitude", favoriteAddress.longitude.toString())
 
-        val bottomNavView = requireActivity().findViewById<AnimatedBottomBar>(R.id.bottom_nav_view)
-        bottomNavView.selectTabAt(0,true)
+            findNavController().navigate(FavoritesFragmentDirections.actionNavigationFavoritesToNavigationHome())
+
+            val bottomNavView = requireActivity().findViewById<AnimatedBottomBar>(R.id.bottom_nav_view)
+            bottomNavView.selectTabAt(0,true)
+        } else{
+            Toast.makeText(requireContext(), requireContext().getString(R.string.internetDisconnected), Toast.LENGTH_SHORT).show()
+        }
+
+
     }
 
     override fun onDeleteClickFavorites(favoriteAddress: FavoriteAddress) {
-        lifecycleScope.launch {
+        val index = favoritesAdapter.currentList.indexOf(favoriteAddress)
+        val job = lifecycleScope.launch {
             favoritesViewModel.deleteFavoriteAddress(favoriteAddress)
+        }
+        job.invokeOnCompletion {
+            favoritesViewModel.loadFavorites()
         }
     }
 

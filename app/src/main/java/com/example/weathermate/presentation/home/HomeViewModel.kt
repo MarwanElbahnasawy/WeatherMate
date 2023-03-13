@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.example.weathermate.data.Repository
 import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.remote.RetrofitStateWeather
+import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -68,16 +69,29 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
-    fun updateCityName(isAdded: Boolean) {
+    fun updateCityName(isAdded: Boolean, addressName: String?) {
         if (isAdded) {
-            val addresses = geocoder.getFromLocation(latitudeDouble, longitudeDouble, 1)
-            if (addresses != null && addresses.isNotEmpty()) {
-                val address = addresses[0]
-                val addressName = address.locality ?: address.subAdminArea ?: address.adminArea
-                cityName.value = addressName
+
+            if(NetworkManager.isInternetConnected()){
+                val addresses = geocoder.getFromLocation(latitudeDouble, longitudeDouble, 1)
+                if (addresses != null && addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val addressName = address.locality ?: address.subAdminArea ?: address.adminArea
+                    cityName.value = addressName
+                }
+            }else{
+                if (addressName != null){
+                    cityName.value = addressName!!
+                } else{
+                    cityName.value = ""
+                }
             }
+
+
         }
     }
+
+
 
     fun getTemperatureUnit(): String? {
         return repository.getStringFromSharedPreferences("temperature_unit", "")
@@ -95,12 +109,31 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
         return repository.getStringFromSharedPreferences(key, stringDefault)
     }
 
-    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
-        repository.insertOrUpdateWeatherData(weatherData)
+    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData, addressFromLatLng: String) {
+        repository.insertOrUpdateWeatherData(
+            WeatherData(weatherData.current,
+                weatherData.daily,
+                weatherData.hourly,
+                weatherData.lat,
+                weatherData.lon,
+                weatherData.alerts,
+                addressFromLatLng)
+        )
+    }
+
+    fun getAddressNameFromLatLng(lat:Double, lng:Double) : String{
+        var addressName = ""
+        val addresses = geocoder.getFromLocation(lat, lng, 1)
+        if (addresses != null && addresses.isNotEmpty()) {
+            val address = addresses[0]
+            addressName = address.locality ?: address.subAdminArea ?: address.adminArea
+        }
+        return addressName
     }
 
     suspend fun getWeatherDataFromDatabase(): WeatherData? {
         return repository.getWeatherDataFromDB()
     }
+
 
 }

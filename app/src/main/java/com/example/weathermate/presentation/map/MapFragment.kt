@@ -31,6 +31,7 @@ import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.remote.RetrofitStateWeather
 import com.example.weathermate.databinding.FragmentMapBinding
 import com.example.weathermate.presentation.initial_preferences.InterfaceInitialPreferences
+import com.example.weathermate.util.NetworkManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,7 +58,7 @@ class MapFragment : Fragment(), MapManagerInterface {
 
     private var longitudeDouble: Double = 0.0
     private var latitudeDouble: Double = 0.0
-    private var myAddress : String = ""
+    private var myAddress: String = ""
 
     lateinit var geocoder: Geocoder
 
@@ -113,24 +115,29 @@ class MapFragment : Fragment(), MapManagerInterface {
 
         insertToFavorites()
 
+        disableOrEnableSearchBasedOnInternet()
+
     }
+
     private fun initFrag() {
 
         geocoder = Geocoder(requireContext(), Locale.getDefault())
 
-        latitudeDouble = mapViewModel.getStringFromSharedPreferences("latitude", "")?.toDouble() ?: 0.0
-        longitudeDouble = mapViewModel.getStringFromSharedPreferences("longitude", "")?.toDouble() ?: 0.0
-        if (latitudeDouble != 0.0){
-            setMyAddressFromLatAndLon(latitudeDouble,longitudeDouble)
+        latitudeDouble =
+            mapViewModel.getStringFromSharedPreferences("latitude", "")?.toDouble() ?: 0.0
+        longitudeDouble =
+            mapViewModel.getStringFromSharedPreferences("longitude", "")?.toDouble() ?: 0.0
+        if (latitudeDouble != 0.0) {
+            setMyAddressFromLatAndLon(latitudeDouble, longitudeDouble)
         }
 
 
-        if(args.isFromAlerts || args.isFromSettings){
+        if (args.isFromAlerts || args.isFromSettings) {
             binding.btnSelectOrAddOnMap.text = "Select"
         }
 
-        startLottieAnimation(binding.imgSearchIcon , "search.json")
-        startLottieAnimation(binding.imgClearSearch , "delete.json")
+        startLottieAnimation(binding.imgSearchIcon, "search.json")
+        startLottieAnimation(binding.imgClearSearch, "delete.json")
 
         val animator = ObjectAnimator.ofFloat(binding.imgCurrentLocation, "rotation", 0f, 360f)
         animator.repeatCount = ValueAnimator.INFINITE
@@ -143,12 +150,21 @@ class MapFragment : Fragment(), MapManagerInterface {
         mapFragment.getMapAsync {
             myMap = it
             myMap.setOnMapClickListener { latLng ->
+                if (NetworkManager.isInternetConnected()) {
                     setUpMapOnClick(latLng)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getText(R.string.internetDisconnected),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
 
-        if (mapManager.isLocationEnabled()){
-            mapManager.getLastLocation()
+        if (mapManager.isLocationEnabled()) {
+            if (NetworkManager.isInternetConnected())
+                mapManager.getLastLocation()
         }
 
     }
@@ -209,10 +225,10 @@ class MapFragment : Fragment(), MapManagerInterface {
         myMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16f), 1500, null)
         myMap.addMarker(markerOptions)
 
-     /*   if(args.isFromSettings){
-            mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
-            mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-        }*/
+        /*   if(args.isFromSettings){
+               mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
+               mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
+           }*/
 
     }
 
@@ -234,7 +250,7 @@ class MapFragment : Fragment(), MapManagerInterface {
         binding.etSearchMap.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-                if(!isClearing) {
+                if (!isClearing) {
                     binding.rvSearchSuggestions.visibility = View.VISIBLE
                     binding.rvSearchSuggestions.setBackgroundColor(Color.WHITE)
                     binding.rvSearchSuggestions.alpha = 0.8f
@@ -298,7 +314,7 @@ class MapFragment : Fragment(), MapManagerInterface {
 
     }
 
-    private fun setMyAddressFromLatAndLon(latitude: Double, longitude: Double){
+    private fun setMyAddressFromLatAndLon(latitude: Double, longitude: Double) {
         val addresses = geocoder.getFromLocation(latitude, longitude, 1)
         if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0]
@@ -309,28 +325,52 @@ class MapFragment : Fragment(), MapManagerInterface {
     }
 
     private fun activateImgCurrentLocation() {
+
         binding.imgCurrentLocation.setOnClickListener {
-            if(mapManager.isLocationEnabled()){
-                mapManager.getLastLocation()
-            } else{
-                Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_SHORT).show()
-                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-                startActivity(intent)
+
+            if (NetworkManager.isInternetConnected()) {
+                if (mapManager.isLocationEnabled()) {
+                    mapManager.getLastLocation()
+                } else {
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.turnOnLocation), Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                    startActivity(intent)
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getText(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+
         }
+
 
     }
 
     private fun activateSearchIconListener() {
         binding.imgSearchIcon.setOnClickListener {
-            if(binding.etSearchMap.text.isNotBlank()){
-                setUpMapUsingLocationString(binding.etSearchMap.text.toString())
-                binding.rvSearchSuggestions.adapter = SearchSuggestionAdapter(mutableListOf() , object :
-                    InterfaceInitialPreferences {})
-                isLocationChosenOnMap = true
 
+            if (NetworkManager.isInternetConnected()) {
+                if (binding.etSearchMap.text.isNotBlank()) {
+                    setUpMapUsingLocationString(binding.etSearchMap.text.toString())
+                    binding.rvSearchSuggestions.adapter =
+                        SearchSuggestionAdapter(mutableListOf(), object :
+                            InterfaceInitialPreferences {})
+                    isLocationChosenOnMap = true
+
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getText(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-         }
+
+
+        }
 
     }
 
@@ -343,45 +383,81 @@ class MapFragment : Fragment(), MapManagerInterface {
     }
 
     private fun activateAddButtonListener() {
-        
-        if(args.isFromFavorites){
+
+        if (args.isFromFavorites) {
             binding.btnSelectOrAddOnMap.visibility = View.VISIBLE
             binding.btnSelectOrAddOnMap.setOnClickListener {
-                if (isLocationChosenOnMap){
-                    isLocationChosenOnMap = false
-                    mapViewModel.insertFavoriteAddressInternetCall(
-                        latitudeDouble,
-                        longitudeDouble
-                    )
-                    Toast.makeText(requireContext(),"Added to favorites.", Toast.LENGTH_SHORT).show()
-                } else{
-                    Toast.makeText(requireContext(),"Location is already in favorites.", Toast.LENGTH_SHORT).show()
+
+                if (NetworkManager.isInternetConnected()) {
+                    if (isLocationChosenOnMap) {
+                        isLocationChosenOnMap = false
+                        mapViewModel.insertFavoriteAddressInternetCall(
+                            latitudeDouble,
+                            longitudeDouble
+                        )
+                        Toast.makeText(requireContext(), requireContext().getString(R.string.addedToFavorites), Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            requireContext().getString(R.string.locationAlreadyInFavorites),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(R.string.internetDisconnected),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
+
+
             }
 
-        } else if (args.isFromAlerts){
+        } else if (args.isFromAlerts) {
             binding.btnSelectOrAddOnMap.visibility = View.VISIBLE
             binding.btnSelectOrAddOnMap.setOnClickListener {
                 if (isLocationChosenOnMap) {
                     isLocationChosenOnMap = false
-                    mapViewModel.putStringInSharedPreferences("ALERT_LATITUDE_FROM_MAP", latitudeDouble.toString())
-                    mapViewModel.putStringInSharedPreferences("ALERT_LONGITUDE_FROM_MAP", longitudeDouble.toString())
-                    mapViewModel.putStringInSharedPreferences("ALERT_ADDRESS" , myAddress)
-                    Toast.makeText(requireContext(),"Location selected.", Toast.LENGTH_SHORT).show()
-                } else{
-                    Toast.makeText(requireContext(),"Location is already selected.", Toast.LENGTH_SHORT).show()
+                    mapViewModel.putStringInSharedPreferences(
+                        "ALERT_LATITUDE_FROM_MAP",
+                        latitudeDouble.toString()
+                    )
+                    mapViewModel.putStringInSharedPreferences(
+                        "ALERT_LONGITUDE_FROM_MAP",
+                        longitudeDouble.toString()
+                    )
+                    mapViewModel.putStringInSharedPreferences("ALERT_ADDRESS", myAddress)
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.locationSelected), Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(R.string.locationIsAlreadySelected),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-        }
-
-        else if (args.isFromSettings){
+        } else if (args.isFromSettings) {
 
             binding.btnSelectOrAddOnMap.setOnClickListener {
-                mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
-                mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-                Toast.makeText(requireContext(),"Location selected.", Toast.LENGTH_SHORT).show()
+
+                if(NetworkManager.isInternetConnected()){
+                    mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
+                    mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.locationSelected), Toast.LENGTH_SHORT)
+                        .show()
+                } else{
+                    Toast.makeText(
+                        requireContext(),
+                        requireContext().getString(R.string.internetDisconnected),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+
             }
-          //  binding.btnAddToFavorites.visibility = View.GONE
 
         }
     }
@@ -389,7 +465,7 @@ class MapFragment : Fragment(), MapManagerInterface {
     private fun insertToFavorites() {
         lifecycleScope.launch {
             mapViewModel.retrofitStateWeather.collectLatest {
-                when (it){
+                when (it) {
                     is RetrofitStateWeather.Loading -> {
 
                     }
@@ -397,16 +473,18 @@ class MapFragment : Fragment(), MapManagerInterface {
                         Log.i(TAG, "insertToFavorites: ${it.errorMessage}")
                     }
                     is RetrofitStateWeather.OnSuccess -> {
-                        mapViewModel.insertToFavorites(FavoriteAddress(
-                            address = myAddress,
-                            latitude = latitudeDouble,
-                            longitude = longitudeDouble,
-                            latlngString = (latitudeDouble.toString()+longitudeDouble.toString()),
-                            currentTemp = it.weatherData.current.temp,
-                            currentDescription = it.weatherData.current.weather[0].description,
-                            lastCheckedTime = System.currentTimeMillis(),
-                            icon = it.weatherData.current.weather[0].icon
-                        ))
+                        mapViewModel.insertToFavorites(
+                            FavoriteAddress(
+                                address = myAddress,
+                                latitude = latitudeDouble,
+                                longitude = longitudeDouble,
+                                latlngString = (latitudeDouble.toString() + longitudeDouble.toString()),
+                                currentTemp = it.weatherData.current.temp,
+                                currentDescription = it.weatherData.current.weather[0].description,
+                                lastCheckedTime = System.currentTimeMillis(),
+                                icon = it.weatherData.current.weather[0].icon
+                            )
+                        )
                     }
                 }
             }
@@ -421,6 +499,22 @@ class MapFragment : Fragment(), MapManagerInterface {
         animationView.playAnimation()
     }
 
+    private fun disableOrEnableSearchBasedOnInternet() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            while (true) {
+                if (NetworkManager.isInternetConnected()) {
+                    binding.etSearchMap.isEnabled = true
+                    binding.imgClearSearch.isEnabled = true
+                } else {
+                    binding.etSearchMap.isEnabled = false
+                    binding.imgClearSearch.isEnabled = false
+                    binding.rvSearchSuggestions.visibility = View.GONE
+                }
+                delay(250)
+            }
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         binding.etSearchMap.text = Editable.Factory.getInstance().newEditable("")
@@ -428,9 +522,9 @@ class MapFragment : Fragment(), MapManagerInterface {
 
     override fun onDestroy() {
         super.onDestroy()
-        arguments?.putBoolean("isFromFavorites" , false)
-        arguments?.putBoolean("isFromSettings" , false)
-        arguments?.putBoolean("isFromAlerts" , false)
+        arguments?.putBoolean("isFromFavorites", false)
+        arguments?.putBoolean("isFromSettings", false)
+        arguments?.putBoolean("isFromAlerts", false)
     }
 
     override fun mapManagerRequestPermission() {

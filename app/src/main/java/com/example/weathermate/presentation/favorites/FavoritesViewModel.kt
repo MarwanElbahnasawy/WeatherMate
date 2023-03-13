@@ -1,12 +1,10 @@
 package com.example.weathermate.presentation.favorites
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.Repository
 import com.example.weathermate.data.remote.RetrofitStateFavorites
+import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
@@ -20,7 +18,7 @@ class FavoritesViewModel(private val repository: Repository) : ViewModel() {
     val retrofitStateFavorites = MutableStateFlow<RetrofitStateFavorites>(RetrofitStateFavorites.Loading)
 
 
-    fun getAllFavoriteAddresses() : LiveData<List<FavoriteAddress>> {
+    fun getAllFavoriteAddresses() : List<FavoriteAddress> {
         return repository.getAllFavoriteAddresses()
     }
 
@@ -32,49 +30,60 @@ class FavoritesViewModel(private val repository: Repository) : ViewModel() {
         repository.putStringInSharedPreferences(key, stringInput)
     }
 
-    fun observeFavorites() : LiveData<List<FavoriteAddress>>{
+   /* fun observeFavorites() : LiveData<List<FavoriteAddress>>{
         return repository.getAllFavoriteAddresses()
-    }
+    }*/
 
-    fun reloadFavoritesOnline(favoriteAddresses: List<FavoriteAddress>) {
+/*    fun loadAndReloadFavoritesOnline(favoriteAddresses: List<FavoriteAddress>) {
 
 
         var listFavoritesUpdated = mutableListOf<FavoriteAddress>()
 
         viewModelScope.launch(Dispatchers.IO) {
-            Log.i(TAG, "getFavorites: here1")
-                Log.i(TAG, "getFavorites: here2")
 
             if (favoriteAddresses.isNotEmpty()){
-                favoriteAddresses.forEach {currentFavoriteFromRepository ->
-                    val data = if(repository.getStringFromSharedPreferences("language","")=="english") {
-                        repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
-                            currentFavoriteFromRepository.longitude,
-                            "en")
-                    }  else{
-                        repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
-                            currentFavoriteFromRepository.longitude,
-                            "ar")
+
+                if(NetworkManager.isInternetConnected()){
+
+                    favoriteAddresses.forEach {currentFavoriteFromRepository ->
+                        val data = if(repository.getStringFromSharedPreferences("language","")=="english") {
+                            repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
+                                currentFavoriteFromRepository.longitude,
+                                "en")
+                        }  else{
+                            repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
+                                currentFavoriteFromRepository.longitude,
+                                "ar")
+                        }
+
+                        data.catch {
+                            retrofitStateFavorites.value = RetrofitStateFavorites.OnFail(Throwable("Error retrieving data"))
+                        }
+                            .collectLatest{
+
+                                val favoriteAddress = FavoriteAddress(
+                                    address = currentFavoriteFromRepository.address,
+                                    latitude = currentFavoriteFromRepository.latitude,
+                                    longitude = currentFavoriteFromRepository.longitude,
+                                    latlngString = currentFavoriteFromRepository.latlngString,
+                                    currentTemp = it.current.temp,
+                                    currentDescription = it.current.weather[0].description.capitalize(),
+                                    lastCheckedTime = System.currentTimeMillis(),
+                                    icon = it.current.weather[0].icon
+                                )
+
+                                listFavoritesUpdated.add(favoriteAddress)
+
+                            }
+                        retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(listFavoritesUpdated)
+
                     }
 
-                    data.catch {
-                        retrofitStateFavorites.value = RetrofitStateFavorites.OnFail(Throwable("Error retrieving data"))
-                    }
-                        .collectLatest{
-                            listFavoritesUpdated.add(FavoriteAddress(
-                                address = currentFavoriteFromRepository.address,
-                                latitude = currentFavoriteFromRepository.latitude,
-                                longitude = currentFavoriteFromRepository.longitude,
-                                latlngString = currentFavoriteFromRepository.latlngString,
-                                currentTemp = it.current.temp,
-                                currentDescription = it.current.weather[0].description.capitalize(),
-                                lastCheckedTime = System.currentTimeMillis(),
-                                icon = it.current.weather[0].icon
-                            )
-                            )
-                        }
-                    retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(listFavoritesUpdated)
+                } else{
+                    retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(favoriteAddresses)
                 }
+
+
             } else{
                 retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(emptyList())
             }
@@ -87,6 +96,84 @@ class FavoritesViewModel(private val repository: Repository) : ViewModel() {
 
         }
 
+    }*/
+
+ /*   fun updateFavoritesDatabase(
+        listFavoriteAddresses: List<FavoriteAddress>,
+        viewLifecycleOwner: LifecycleOwner,
+        favoritesObserver: Observer<List<FavoriteAddress>>
+    ) {
+        val job = viewModelScope.launch {
+            repository.deleteAllFavoriteAddresses()
+            listFavoriteAddresses.forEach {
+                repository.insertFavoriteAddress(it)
+            }
+        }
+        job.invokeOnCompletion {
+            observeFavorites().observe(viewLifecycleOwner, favoritesObserver)
+        }
+    }*/
+
+    fun loadFavorites() {
+        var listFavoritesFromDB = emptyList<FavoriteAddress>()
+
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            listFavoritesFromDB = repository.getAllFavoriteAddresses()
+        }
+
+        job.invokeOnCompletion {
+            if (listFavoritesFromDB.isNotEmpty()){
+
+                if(NetworkManager.isInternetConnected()){
+
+                    var listFavoritesUpdated = mutableListOf<FavoriteAddress>()
+
+                    viewModelScope.launch {
+                        listFavoritesFromDB.forEach {currentFavoriteFromRepository ->
+                            val data = if(repository.getStringFromSharedPreferences("language","")=="english") {
+                                repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
+                                    currentFavoriteFromRepository.longitude,
+                                    "en")
+                            }  else{
+                                repository.getWeatherDataOnline(currentFavoriteFromRepository.latitude,
+                                    currentFavoriteFromRepository.longitude,
+                                    "ar")
+                            }
+
+                            data.catch {
+                                retrofitStateFavorites.value = RetrofitStateFavorites.OnFail(Throwable("Error retrieving data"))
+                            }
+                                .collectLatest{
+
+                                    val favoriteAddress = FavoriteAddress(
+                                        address = currentFavoriteFromRepository.address,
+                                        latitude = currentFavoriteFromRepository.latitude,
+                                        longitude = currentFavoriteFromRepository.longitude,
+                                        latlngString = currentFavoriteFromRepository.latlngString,
+                                        currentTemp = it.current.temp,
+                                        currentDescription = it.current.weather[0].description.capitalize(),
+                                        lastCheckedTime = System.currentTimeMillis(),
+                                        icon = it.current.weather[0].icon
+                                    )
+
+                                    listFavoritesUpdated.add(favoriteAddress)
+
+                                }
+                            retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(listFavoritesUpdated)
+
+                        }
+                    }
+
+
+                } else{
+
+                    retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(listFavoritesFromDB)
+
+                }
+            } else{
+                retrofitStateFavorites.value = RetrofitStateFavorites.OnSuccess(listFavoritesFromDB)
+            }
+        }
     }
 
 }

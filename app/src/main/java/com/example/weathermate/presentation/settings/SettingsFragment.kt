@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import com.example.weathermate.R
 import com.example.weathermate.databinding.FragmentSettingsBinding
 import com.example.weathermate.presentation.map.MapManager
 import com.example.weathermate.presentation.map.MapManagerInterface
+import com.example.weathermate.util.NetworkManager
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.GoogleMap
 import nl.joery.animatedbottombar.AnimatedBottomBar
@@ -35,7 +37,6 @@ class SettingsFragment : Fragment() , MapManagerInterface {
     lateinit var binding: FragmentSettingsBinding
 
     lateinit var mfusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var myMap: GoogleMap
     private var longitudeDouble: Double = 0.0
     private var latitudeDouble: Double = 0.0
 
@@ -198,10 +199,31 @@ class SettingsFragment : Fragment() , MapManagerInterface {
 
     private fun activateLocationClickListener() {
         binding.imgGPS.setOnClickListener {
-            mapManager.getLastLocation()
+
+            if(NetworkManager.isInternetConnected()){
+                mapManager.getLastLocation()
+            } else{
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+
         }
         binding.imgMap.setOnClickListener {
-            findNavController().navigate(SettingsFragmentDirections.actionNavigationSettingsToMapFragment(isFromSettings = true))
+
+            if(NetworkManager.isInternetConnected()){
+                findNavController().navigate(SettingsFragmentDirections.actionNavigationSettingsToMapFragment(isFromSettings = true))
+            } else{
+                Toast.makeText(
+                    requireContext(),
+                    requireContext().getString(R.string.internetDisconnected),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
         }
     }
     private fun startLottieAnimation(animationView: LottieAnimationView, animationName: String) {

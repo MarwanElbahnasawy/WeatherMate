@@ -43,7 +43,7 @@ class LocalDataSource private constructor(context: Context) {
 
 
     //Favorites
-    fun getAllFavoriteAddresses(): LiveData<List<FavoriteAddress>>{
+    fun getAllFavoriteAddresses(): List<FavoriteAddress>{
         return favoriteAddressDAO.getAllFavoriteAddresses()
     }
 
@@ -53,6 +53,10 @@ class LocalDataSource private constructor(context: Context) {
 
     suspend fun deleteFavoriteAddress(address: FavoriteAddress){
         favoriteAddressDAO.deleteFavoriteAddress(address)
+    }
+
+    suspend fun deleteAllFavoriteAddresses(){
+        favoriteAddressDAO.deleteAllFavoriteAddresses()
     }
 
     //Alerts
