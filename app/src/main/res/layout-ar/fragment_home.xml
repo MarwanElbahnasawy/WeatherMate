@@ -89,19 +89,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTemp" />
 
                 <TextView
-                    android:id="@+id/textViewDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:elevation="20dp"
-                    android:text="Date"
-                    android:textColor="@color/generalText"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textLastCheckedAt" />
-
-                <TextView
                     android:id="@+id/textViewTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,7 +99,22 @@
                     android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
+                    app:layout_constraintTop_toBottomOf="@+id/textLastCheckedAt" />
+                
+                <TextView
+                    android:id="@+id/textViewDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:elevation="20dp"
+                    android:text="Date"
+                    android:textColor="@color/generalText"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewTime" />
+
+                
 
                 <TextView
                     android:id="@+id/textViewWeatherDescription"
@@ -125,7 +127,7 @@
                     android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textViewTime" />
+                    app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
 
 
                 <com.airbnb.lottie.LottieAnimationView
