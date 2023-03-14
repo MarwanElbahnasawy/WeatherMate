@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:layout_margin="20dp"
-    android:background="@drawable/custom_background_color_gray"
+    android:background="@drawable/gradient_item_fav_alert"
     app:cardCornerRadius="30dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/custom_background_color_gray">
+        android:background="@drawable/gradient_item_fav_alert">
 
         <TextView
             android:id="@+id/tv_location"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:ellipsize="end"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/imgNotification"
             app:layout_constraintTop_toTopOf="parent"
@@ -33,7 +33,7 @@
             android:layout_marginTop="10dp"
             android:ellipsize="end"
             android:inputType="textMultiLine"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="13sp"
             app:layout_constraintStart_toStartOf="@+id/tv_location"
             app:layout_constraintTop_toBottomOf="@+id/tv_location"
@@ -47,7 +47,7 @@
             android:layout_marginBottom="15dp"
             android:ellipsize="end"
             android:inputType="textMultiLine"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_start_time"

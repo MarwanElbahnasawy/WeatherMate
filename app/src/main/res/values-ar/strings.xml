@@ -56,12 +56,16 @@
     <string name="at">في</string>
     <string name="internetDisconnected">برجاء التحقق من الاتصال بالانترنت.</string>
     <string name="internetDisconnectedFirstTimeInApp">برجاء تمكين الاتصال بالإنترنت عند الإطلاق الأول.</string>
-    <string name="locationSelected">الموقع المحدد.</string>
+    <string name="locationSelected">تم تحديد الموقع.</string>
     <string name="locationIsAlreadySelected">الموقع محدد بالفعل.</string>
     <string name="turnOnLocation">برجاء السماح بتحديد الموقع</string>
     <string name="addedToFavorites">تمت الإضافة إلى المفضلة.</string>
     <string name="locationAlreadyInFavorites">الموقع موجود بالفعل في المفضلة.</string>
     <string name="choosePreferences">يجب عليك اختيار تفضيلاتك الأولية.</string>
     <string name="internetIsDisconnected">لا يوجد اتصال بالانترنت</string>
+    <string name="endtimafterstart">يجب أن يكون تاريخ الانتهاء بعد تاريخ البدء.</string>
+    <string name="theme">المظهر</string>
+    <string name="light">فاتح</string>
+    <string name="dark">داكن</string>
 
 </resources>

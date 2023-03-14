@@ -16,7 +16,6 @@ abstract class MyDatabase : RoomDatabase() {
 
     abstract fun getWeatherDataDAO(): WeatherDataDAO
     abstract fun getFavoriteAddressDAO(): FavoriteAddressDAO
-
     abstract fun getAlertsDAO(): AlertsDAO
 
     companion object {

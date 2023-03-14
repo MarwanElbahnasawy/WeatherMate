@@ -22,7 +22,7 @@
 
     <nl.joery.animatedbottombar.AnimatedBottomBar
         android:id="@+id/bottom_nav_view"
-        android:background="@color/my_custom_white_5"
+        android:background="@color/general_bottom_nav_bar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         app:abb_selectedTabType="text"

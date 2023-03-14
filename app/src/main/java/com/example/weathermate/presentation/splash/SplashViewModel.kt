@@ -8,4 +8,8 @@ class SplashViewModel(private val repository: Repository) : ViewModel(){
         return repository.getBooleanFromSharedPreferences("preferences_set", false)
     }
 
+    fun isDark(): Boolean {
+        return repository.getBooleanFromSharedPreferences("isDarkTheme",false)
+    }
+
 }

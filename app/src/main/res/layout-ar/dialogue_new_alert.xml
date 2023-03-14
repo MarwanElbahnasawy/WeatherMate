@@ -17,8 +17,8 @@
             android:gravity="center"
             android:text="@string/from"
             android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textColor="@color/generalText"
+            android:textSize="18sp"
             app:backgroundTint="@null"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,8 +32,8 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="@string/to"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textColor="@color/generalText"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
@@ -76,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:hint="@string/selectLocation"
+            android:textColorHint="@color/generalText"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -134,31 +135,13 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="5dp"
+            android:background="@color/saveCancelAlert"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rg">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cardViewSaveNewAlert"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/cardViewCancelNewAlert"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rg">
 
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/btnSaveAlert"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/white"
-                            android:text="@string/save"
-                            android:textAllCaps="false"
-                            android:textColor="@color/black" />
-                </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardViewCancelNewAlert"
@@ -175,13 +158,32 @@
                             android:id="@+id/btnCancelAlert"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/white"
+                            android:background="@color/saveCancelAlert"
                             android:text="@string/cancel"
                             android:textAllCaps="false"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/generalText" />
                 </androidx.cardview.widget.CardView>
 
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewSaveNewAlert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/cardViewCancelNewAlert"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rg">
 
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnSaveAlert"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/saveCancelAlert"
+                            android:text="@string/save"
+                            android:textAllCaps="false"
+                            android:textColor="@color/generalText" />
+                </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 

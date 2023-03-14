@@ -14,7 +14,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/et_searchMap"
         app:layout_constraintStart_toStartOf="@+id/et_searchMap"
         app:layout_constraintTop_toTopOf="@+id/et_searchMap"
-        app:srcCompat="@drawable/baseline_search_24" />
+        app:srcCompat="@drawable/baseline_search_24"
+        app:lottie_colorFilter="@color/generalText"
+        />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/img_clear_search"
@@ -25,17 +27,19 @@
         app:layout_constraintBottom_toBottomOf="@+id/et_searchMap"
         app:layout_constraintEnd_toEndOf="@+id/et_searchMap"
         app:layout_constraintTop_toTopOf="@+id/et_searchMap"
-        app:srcCompat="@drawable/baseline_close_24" />
+        app:srcCompat="@drawable/baseline_close_24"
+        app:lottie_colorFilter="@color/generalText"
+        />
 
     <EditText
         android:id="@+id/et_searchMap"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:layout_marginTop="10dp"
+        android:textSize="16sp"
         android:ems="10"
         android:hint="@string/search_map"
-        android:inputType="textPersonName"
-        android:paddingStart="50dp"
+        android:paddingStart="60dp"
         android:paddingEnd="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
+            android:textColor="@color/black"
             android:enabled="false"
             android:text="Add to favorites"
             android:textAllCaps="false"

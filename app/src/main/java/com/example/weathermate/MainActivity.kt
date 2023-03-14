@@ -2,9 +2,9 @@ package com.example.weathermate
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -42,8 +42,15 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
 
         NetworkManager.setListener(this)
 
+        checkIfThemeChangedBySettings()
 
+    }
 
+    private fun checkIfThemeChangedBySettings() {
+        if(mainViewModel.isThemeChangedBySettings()){
+            binding.bottomNavView.selectTabAt(3)
+            mainViewModel.setIsThemeChangedBySettingsToFalse()
+        }
     }
 
     private fun changeBottomBarTabSelection() {

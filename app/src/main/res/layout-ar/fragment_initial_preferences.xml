@@ -12,7 +12,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        app:lottie_colorFilter="@color/general_settings_gear"
+        />
 
     <TextView
         android:id="@+id/tv_language"
@@ -24,7 +26,7 @@
         android:textAppearance="?attr/textAppearanceHeadline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewDummy"
-        android:textColor="@color/black"
+        android:textColor="@color/generalText"
         />
 
     <androidx.cardview.widget.CardView
@@ -32,12 +34,12 @@
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
         app:cardCornerRadius="400dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_language"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_language"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewDummy">
+        app:layout_constraintTop_toTopOf="@+id/tv_language">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutPreferencesLanguages"
@@ -48,26 +50,25 @@
                 android:id="@+id/btnEnglish"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="@color/general_buttons_preferences_settings"
                 android:text="@string/english"
                 android:textAllCaps="false"
+                android:textColor="@color/generalText"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnArabic"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
+                android:background="@color/general_buttons_preferences_settings"
                 android:text="@string/arabic"
                 android:textAllCaps="false"
+                android:textColor="@color/generalText"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
@@ -81,7 +82,7 @@
         android:textAppearance="?attr/textAppearanceHeadline6"
         app:layout_constraintStart_toStartOf="@+id/tv_language"
         app:layout_constraintTop_toBottomOf="@+id/tv_language"
-        android:textColor="@color/black"
+        android:textColor="@color/generalText"
         />
 
     <androidx.cardview.widget.CardView
@@ -103,26 +104,26 @@
                 android:id="@+id/btnGPS"
                 android:layout_width="120dp"
                 android:layout_height="48dp"
-                android:background="@color/white"
+                android:background="@color/general_buttons_preferences_settings"
                 android:text="@string/location"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"
+                android:textColor="@color/generalText"
                 />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnMap"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:background="@android:color/transparent"
+                android:background="@color/general_buttons_preferences_settings"
                 android:text="@string/map"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/black"
+                android:textColor="@color/generalText"
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -137,7 +138,9 @@
         app:layout_constraintBottom_toBottomOf="@+id/et_searchMap"
         app:layout_constraintStart_toStartOf="@+id/et_searchMap"
         app:layout_constraintTop_toTopOf="@+id/et_searchMap"
-        app:srcCompat="@drawable/baseline_search_24" />
+        app:srcCompat="@drawable/baseline_search_24"
+        app:lottie_colorFilter="@color/generalText"
+        />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/img_clear_search"
@@ -148,19 +151,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/et_searchMap"
         app:layout_constraintEnd_toEndOf="@+id/et_searchMap"
         app:layout_constraintTop_toTopOf="@+id/et_searchMap"
-        app:srcCompat="@drawable/baseline_close_24" />
+        app:srcCompat="@drawable/baseline_close_24"
+        app:lottie_colorFilter="@color/generalText"
+        />
 
     <EditText
         android:id="@+id/et_searchMap"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="@string/search_map"
-        android:inputType="textPersonName"
-        android:paddingStart="50dp"
+        android:paddingStart="60dp"
         android:paddingEnd="70dp"
-        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textColor="@color/generalText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardViewSettingsLocation" />
@@ -214,9 +219,9 @@
         android:id="@+id/imgCurrentLocation"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardViewSavePreferences"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintTop_toTopOf="@+id/cardViewSavePreferences"
         app:srcCompat="@drawable/baseline_gps_fixed_24" />
 

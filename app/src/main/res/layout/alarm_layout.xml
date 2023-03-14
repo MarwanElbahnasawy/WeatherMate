@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/custom_background_color_gray">
+        android:background="@drawable/gradient_item_fav_alert">
 
         <TextView
             android:id="@+id/tv_alarm"
@@ -21,7 +21,7 @@
             android:layout_marginTop="10dp"
             android:inputType="textMultiLine"
             android:text="@string/weatherMateAlarmDescription"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@+id/tv_weatherMateAlarm"
             app:layout_constraintTop_toBottomOf="@+id/tv_weatherMateAlarm" />
@@ -44,7 +44,7 @@
                 android:background="@color/myPurple"
                 android:padding="12dp"
                 android:text="Dismiss"
-                android:textColor="@color/black"
+                android:textColor="@color/generalText"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:text="@string/WeatherMateAlert"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/cardViewAlarm"
             app:layout_constraintTop_toTopOf="parent" />

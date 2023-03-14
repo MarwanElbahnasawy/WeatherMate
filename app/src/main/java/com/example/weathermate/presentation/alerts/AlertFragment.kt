@@ -265,7 +265,7 @@ class AlertFragment : Fragment() , InterfaceAlerts {
                 if(unixTimeDTStart>=unixTimeDTEnd){
                     alertDialog.dismiss()
                     showAddAlertDialog()
-                    Toast.makeText(requireContext(), "End Date must be after Start Date.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.endtimafterstart), Toast.LENGTH_SHORT).show()
                 } else{
                     var alertType = ""
                     if (dialogView.findViewById<RadioButton>(R.id.rbNotification).isChecked) {

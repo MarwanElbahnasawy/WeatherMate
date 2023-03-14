@@ -32,14 +32,14 @@
     <color name="mydarkpurple">#8103FF</color>
     <color name="my_dark_theme">#242527</color>
 
-    <!--    My light and dark mode colors-->
+<!--    My light and dark mode colors-->
 
-    <color name="generalTheme">#FCFCFC</color>
-    <color name="generalText">#000000</color>
-    <color name="generalStatusbar">#aaa</color>
-    <color name="general_bottom_nav_bar">#F1F1F1</color>
-    <color name="general_buttons_preferences_settings">#FFFFFF</color>
-    <color name="general_settings_gear">#202123</color>
-    <color name="saveCancelAlert">#FCFCFC</color>
+    <color name="generalTheme">#242527</color>
+    <color name="generalText">#FFFFFF</color>
+    <color name="generalStatusbar">#FFFFFF</color>
+    <color name="general_bottom_nav_bar">#18191A</color>
+    <color name="general_buttons_preferences_settings">#424242</color>
+    <color name="general_settings_gear">#FEFEFE</color>
+    <color name="saveCancelAlert">#424242</color>
 
 </resources>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -69,7 +70,11 @@ class SettingsFragment : Fragment() , MapManagerInterface {
 
         activateLocationClickListener()
 
+        activateThemeClickListener()
+
     }
+
+
 
 
     private fun initFrag() {
@@ -101,6 +106,12 @@ class SettingsFragment : Fragment() , MapManagerInterface {
             binding.btnMps.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
         } else {
             binding.btnMph.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+        }
+
+        if (settingsViewModel.checkIsDarkSharedPreferences()) {
+            binding.btnDark.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+        } else {
+            binding.btnLight.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
         }
 
         startLottieAnimation(binding.imageViewDummy , "settings2.json")
@@ -148,7 +159,7 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         binding.btnEnglish.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("language", "english")
             binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
 
             changeLanguageAndLayout("en")
 
@@ -156,7 +167,7 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         binding.btnArabic.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("language", "arabic")
             binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
 
             changeLanguageAndLayout("ar")
 
@@ -168,20 +179,20 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         binding.btnCelsius.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
             binding.btnCelsius.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnKelvin.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.btnFahrenheit.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnKelvin.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
+            binding.btnFahrenheit.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
         }
         binding.btnKelvin.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("temperature_unit", "kelvin")
             binding.btnKelvin.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnCelsius.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.btnFahrenheit.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnCelsius.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
+            binding.btnFahrenheit.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
         }
         binding.btnFahrenheit.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("temperature_unit", "fahrenheit")
             binding.btnFahrenheit.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnCelsius.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.btnKelvin.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnCelsius.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
+            binding.btnKelvin.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
         }
     }
 
@@ -189,12 +200,12 @@ class SettingsFragment : Fragment() , MapManagerInterface {
         binding.btnMps.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("wind_speed_unit", "mps")
             binding.btnMps.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnMph.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnMph.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
         }
         binding.btnMph.setOnClickListener {
             settingsViewModel.putStringInSharedPreferences("wind_speed_unit", "mph")
             binding.btnMph.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
-            binding.btnMps.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.btnMps.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
         }
     }
 
@@ -210,8 +221,6 @@ class SettingsFragment : Fragment() , MapManagerInterface {
                     Toast.LENGTH_SHORT
                 ).show()
             }
-
-
         }
         binding.imgMap.setOnClickListener {
 
@@ -227,6 +236,24 @@ class SettingsFragment : Fragment() , MapManagerInterface {
 
         }
     }
+
+    private fun activateThemeClickListener() {
+        binding.btnLight.setOnClickListener {
+            settingsViewModel.putBooleanInSharedPreferences("isThemeChangedBySettings", true)
+            settingsViewModel.putBooleanInSharedPreferences("isDarkTheme", false)
+            binding.btnLight.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnDark.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+        binding.btnDark.setOnClickListener {
+            settingsViewModel.putBooleanInSharedPreferences("isThemeChangedBySettings", true)
+            settingsViewModel.putBooleanInSharedPreferences("isDarkTheme", true)
+            binding.btnDark.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
+            binding.btnLight.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+    }
+
     private fun startLottieAnimation(animationView: LottieAnimationView, animationName: String) {
         animationView.setAnimation(animationName)
         animationView.repeatCount = LottieDrawable.INFINITE

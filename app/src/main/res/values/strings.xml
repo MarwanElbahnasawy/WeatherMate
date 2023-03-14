@@ -37,8 +37,8 @@
     <string name="endDate">End Date</string>
     <string name="mpsUnit">m/s</string>
     <string name="mphUnit">mph</string>
-    <string name="mps">Metre Per Second</string>
-    <string name="mph">Miles Per Hour</string>
+    <string name="mps">Metre/Second</string>
+    <string name="mph">Miles/Hour</string>
     <string name="WeatherMate">Weather Mate</string>
     <string name="WeatherMateAlert">WeatherMate Alert</string>
     <string name="weatherMateAlarmDescription">WeatherMate Alarm Description</string>
@@ -64,5 +64,9 @@
     <string name="locationAlreadyInFavorites">Location is already in favorites.</string>
     <string name="choosePreferences">You need to choose your initial preferences.</string>
     <string name="internetIsDisconnected">Internet is disconnected</string>
+    <string name="endtimafterstart">End Date must be after Start Date.</string>
+    <string name="theme">Theme</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
 
 </resources>

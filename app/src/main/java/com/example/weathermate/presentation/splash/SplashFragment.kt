@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import android.widget.ViewAnimator
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
@@ -28,12 +29,27 @@ class SplashFragment : Fragment() {
     lateinit var splashViewModel: SplashViewModel
     private lateinit var binding: FragmentSplashBinding
 
+
+
+    private fun changeThemeOnStartup() {
+        if (splashViewModel.isPreferencesSet()) {
+            if (splashViewModel.isDark()){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+        playSplashAnimation()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val viewModelFactory = SplashViewModelFactory(MyApp.getInstanceRepository())
         splashViewModel = ViewModelProvider(this,viewModelFactory)[SplashViewModel::class.java]
+
+
 
         binding = FragmentSplashBinding.inflate(inflater, container, false)
         return binding.root
@@ -42,6 +58,10 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        changeThemeOnStartup()
+    }
+
+    private fun playSplashAnimation() {
         val animationView = binding.imgSplash
         animationView.setAnimation("splash.json")
         animationView.playAnimation()
@@ -57,6 +77,8 @@ class SplashFragment : Fragment() {
                     val navOptions = NavOptions.Builder()
                         .setPopUpTo(R.id.nav_graph, true)
                         .build()
+
+                    if(isAdded)
                     findNavController().navigate(action, navOptions)
 
                 } else{
@@ -76,6 +98,8 @@ class SplashFragment : Fragment() {
                         while (true) {
                             if (NetworkManager.isInternetConnected()) {
                                 toast.cancel()
+
+                                if(isAdded)
                                 findNavController().navigate(action, navOptions)
                                 break
                             } else {
@@ -93,6 +117,5 @@ class SplashFragment : Fragment() {
             override fun onAnimationRepeat(animation: Animator) {
             }
         })
-
     }
 }

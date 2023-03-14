@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -140,7 +141,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
             binding.btnArabic.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.general_buttons_preferences_settings
                 )
             )
             selectedLanguage = "english"
@@ -155,7 +156,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
             binding.btnEnglish.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.general_buttons_preferences_settings
                 )
             )
             selectedLanguage = "arabic"
@@ -172,7 +173,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
             binding.btnGPS.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.general_buttons_preferences_settings
                 )
             )
 
@@ -191,7 +192,7 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
             binding.btnMap.setBackgroundColor(
                 ContextCompat.getColor(
                     requireContext(),
-                    R.color.white
+                    R.color.general_buttons_preferences_settings
                 )
             )
 
@@ -420,6 +421,14 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         initialPreferencesViewModel.putBooleanInSharedPreferences("preferences_set", true)
         initialPreferencesViewModel.putStringInSharedPreferences("temperature_unit", "celsius")
         initialPreferencesViewModel.putStringInSharedPreferences("wind_speed_unit", "mps")
+
+        val isDarkThemeOn = (resources.configuration.uiMode and Configuration.
+        UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        if (isDarkThemeOn){
+            initialPreferencesViewModel.setIsDarkTrue()
+        } else{
+        }
+
         initialPreferencesViewModel.putStringInSharedPreferences("language", selectedLanguage)
         initialPreferencesViewModel.putStringInSharedPreferences(
             "latitude",

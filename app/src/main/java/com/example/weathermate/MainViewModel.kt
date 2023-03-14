@@ -1,13 +1,11 @@
 package com.example.weathermate
 
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.weathermate.alerts.view.AlertsManager
 import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weathermate.data.Repository
-import java.util.*
 
 class MainViewModel(private val repository: Repository) : ViewModel() {
 
@@ -39,6 +37,18 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     fun getLangaugeInSharedPreference(): String {
         return repository.getStringFromSharedPreferences("language","")
+    }
+
+    fun isThemeChangedBySettings(): Boolean {
+        return repository.getBooleanFromSharedPreferences("isThemeChangedBySettings",false)
+    }
+
+    fun setIsThemeChangedBySettingsToFalse() {
+        repository.putBooleanInSharedPreferences("isThemeChangedBySettings",false)
+    }
+
+    fun isDark(): Boolean {
+        return repository.getBooleanFromSharedPreferences("isDarkTheme",false)
     }
 
 }

@@ -57,7 +57,7 @@
                     android:layout_marginTop="20dp"
                     android:elevation="20dp"
                     android:text="@string/unknown"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="30sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -70,7 +70,7 @@
                     android:layout_marginTop="10dp"
                     android:elevation="20dp"
                     android:text="Current Temperature"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="30sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewCity" />
@@ -83,7 +83,7 @@
                     android:layout_marginTop="10dp"
                     android:elevation="20dp"
                     android:text="@string/lastCheckedAt"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewCurrentTemp" />
@@ -96,7 +96,7 @@
                     android:layout_marginTop="10dp"
                     android:elevation="20dp"
                     android:text="Date"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textLastCheckedAt" />
@@ -109,7 +109,7 @@
                     android:layout_marginTop="10dp"
                     android:elevation="20dp"
                     android:text="Time"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewDate" />
@@ -122,7 +122,7 @@
                     android:layout_marginTop="10dp"
                     android:elevation="20dp"
                     android:text="Weather Description"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textViewTime" />
@@ -192,7 +192,7 @@
                         android:id="@+id/containerLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/custom_background_color_gray">
+                        android:background="@drawable/gradient_item_fav_alert">
 
                         <ImageView
                             android:id="@+id/imgPressure"
@@ -206,7 +206,7 @@
 
                         <TextView
                             android:id="@+id/tvPressure"
-                            android:textColor="@color/black"
+                            android:textColor="@color/generalText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -230,7 +230,7 @@
                             android:id="@+id/tvHumidity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="@color/generalText"
                             android:layout_marginTop="10dp"
                             android:text="@string/humidity"
                             app:layout_constraintEnd_toEndOf="@+id/imgHumidity"
@@ -251,7 +251,7 @@
                             android:id="@+id/tvCloudiness"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="@color/generalText"
                             android:layout_marginTop="10dp"
                             android:paddingBottom="10dp"
                             android:text="Cloudiness"
@@ -273,7 +273,7 @@
                             android:id="@+id/tvWind"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
+                            android:textColor="@color/generalText"
                             android:layout_marginTop="10dp"
                             android:paddingBottom="10dp"
                             android:text="@string/wind"

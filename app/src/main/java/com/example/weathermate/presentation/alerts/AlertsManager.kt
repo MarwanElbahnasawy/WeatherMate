@@ -212,6 +212,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                                 .setContentText("$eventWeather ${context?.getString(R.string.at)} $address.")
                                 .setPriority(NotificationCompat.PRIORITY_MAX)
                                 .setContentIntent(pendingIntent)
+                                .setAutoCancel(true)
                                 .addAction(R.drawable.baseline_close_24, context?.getString(R.string.dismissAlert), dismissPendingIntent)
 
 
@@ -258,6 +259,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
                                 .setContentText(eventWeather)
                                 .setPriority(NotificationCompat.PRIORITY_MAX)
                                 .setContentIntent(pendingIntent)
+                                .setAutoCancel(true)
                                 .addAction(R.drawable.baseline_close_24, context?.getString(R.string.dismissAlert), dismissPendingIntent)
 
 

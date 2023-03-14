@@ -19,6 +19,8 @@ class SettingsViewModel(private val repository: Repository) : ViewModel() {
         return repository.getStringFromSharedPreferences(key, stringDefault)
     }
 
-
+    fun checkIsDarkSharedPreferences(): Boolean{
+        return repository.getBooleanFromSharedPreferences("isDarkTheme", false)
+    }
 
 }

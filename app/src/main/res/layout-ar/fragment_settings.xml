@@ -22,7 +22,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            tools:srcCompat="@tools:sample/avatars"
+            app:lottie_colorFilter="@color/general_settings_gear"
+            />
 
 
         <TextView
@@ -59,10 +61,10 @@
                     android:layout_width="120dp"
                     android:layout_height="48dp"
                     android:textSize="13sp"
-                    android:background="@color/white"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/english"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -72,10 +74,10 @@
                     android:layout_width="120dp"
                     android:textSize="13sp"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/arabic"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -113,10 +115,10 @@
                     android:id="@+id/btnCelsius"
                     android:layout_width="80dp"
                     android:layout_height="48dp"
-                    android:background="@color/white"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/celsius"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -126,10 +128,10 @@
                     android:id="@+id/btnKelvin"
                     android:layout_width="80dp"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/kelvin"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btnCelsius"
@@ -139,10 +141,10 @@
                     android:id="@+id/btnFahrenheit"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/fahrenheit"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/btnKelvin"
@@ -183,11 +185,11 @@
                     android:id="@+id/btn_mps"
                     android:layout_width="120dp"
                     android:layout_height="48dp"
-                    android:background="@color/white"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/mps"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
-                    android:textSize="12sp"
+                    android:textColor="@color/generalText"
+                    android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -195,12 +197,67 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_mph"
                     android:layout_width="120dp"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
+                    android:background="@color/general_buttons_preferences_settings"
                     android:text="@string/mph"
                     android:textAllCaps="false"
-                    android:textColor="@color/black"
+                    android:textColor="@color/generalText"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:text="@string/theme"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_wind_unit"
+            app:layout_constraintTop_toBottomOf="@+id/tv_wind_unit" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewPreferencesTheme"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="400dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTheme"
+            app:layout_constraintEnd_toEndOf="@+id/cardViewPreferencesWind"
+            app:layout_constraintStart_toStartOf="@+id/cardViewPreferencesWind"
+            app:layout_constraintTop_toTopOf="@+id/tvTheme">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayoutPreferencesTheme"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_light"
+                    android:layout_width="120dp"
+                    android:layout_height="48dp"
+                    android:background="@color/general_buttons_preferences_settings"
+                    android:text="@string/light"
+                    android:textAllCaps="false"
+                    android:textColor="@color/generalText"
+                    android:textSize="13sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_dark"
+                    android:layout_width="120dp"
+                    android:textSize="13sp"
+                    android:layout_height="match_parent"
+                    android:background="@color/general_buttons_preferences_settings"
+                    android:text="@string/dark"
+                    android:textAllCaps="false"
+                    android:textColor="@color/generalText"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -216,8 +273,8 @@
             android:text="@string/location"
             android:textAppearance="?attr/textAppearanceHeadline6"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="@+id/tv_wind_unit"
-            app:layout_constraintTop_toBottomOf="@+id/tv_wind_unit" />
+            app:layout_constraintStart_toStartOf="@+id/tvTheme"
+            app:layout_constraintTop_toBottomOf="@+id/tvTheme" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/imgGPS"

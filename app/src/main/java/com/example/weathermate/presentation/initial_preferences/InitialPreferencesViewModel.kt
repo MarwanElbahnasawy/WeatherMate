@@ -21,6 +21,10 @@ class InitialPreferencesViewModel(
         return repository.getMapsAutoCompleteResponse(textInput)
     }
 
+    fun setIsDarkTrue() {
+        repository.putBooleanInSharedPreferences("isDarkTheme" , true)
+    }
+
 }
 
 

@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:minHeight="30dp"
-        android:background="@drawable/custom_background_color_gray"
+        android:background="@drawable/gradient_item_fav_alert"
         >
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/tv_addressName"
             app:layout_constraintTop_toBottomOf="@+id/tv_addressName" />
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             app:layout_constraintStart_toStartOf="@+id/tvTemp"
             app:layout_constraintTop_toBottomOf="@+id/tvTemp" />
 
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/lastCheckedAt"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             app:layout_constraintStart_toStartOf="@+id/tvDescription"
             app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="TextView"
-            android:textColor="@color/black"
+            android:textColor="@color/generalText"
             app:layout_constraintStart_toStartOf="@+id/tvLastChecked"
             app:layout_constraintTop_toBottomOf="@+id/tvLastChecked" />
 
