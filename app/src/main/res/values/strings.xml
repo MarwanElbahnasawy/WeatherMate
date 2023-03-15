@@ -32,7 +32,7 @@
     <string name="wind">Wind</string>
     <string name="savePreferences">Save Preferences</string>
     <string name="unknown">Unknown</string>
-    <string name="lastCheckedAt">Last checked at:</string>
+    <string name="lastCheckedAt">Last updated at:</string>
     <string name="startDate">Start Date</string>
     <string name="endDate">End Date</string>
     <string name="mpsUnit">m/s</string>

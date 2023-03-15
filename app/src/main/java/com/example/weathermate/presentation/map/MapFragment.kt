@@ -315,7 +315,7 @@ class MapFragment : Fragment(), MapManagerInterface {
         if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0]
             val addressName =
-                address.locality ?: address.subAdminArea ?: address.adminArea
+                address.locality ?: address.subAdminArea ?: address.adminArea ?: "Unknown"
             myAddress = addressName
         }
     }

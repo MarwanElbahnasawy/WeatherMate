@@ -79,7 +79,11 @@ class HomeViewModel(private val repository: InterfaceRepository) : ViewModel() {
                 if (addresses != null && addresses.isNotEmpty()) {
                     val address = addresses[0]
                     val addressName = address.locality ?: address.subAdminArea ?: address.adminArea
-                    cityName.value = addressName
+                    if(addressName == null){
+                        cityName.value = "Unknown"
+                    } else{
+                        cityName.value = addressName
+                    }
                 }
             }else{
                 if (addressName != null){
@@ -128,7 +132,7 @@ class HomeViewModel(private val repository: InterfaceRepository) : ViewModel() {
         val addresses = geocoder.getFromLocation(lat, lng, 1)
         if (addresses != null && addresses.isNotEmpty()) {
             val address = addresses[0]
-            addressName = address.locality ?: address.subAdminArea ?: address.adminArea
+            addressName = address.locality ?: address.subAdminArea ?: address.adminArea ?: "Unknown"
         }
         return addressName
     }
