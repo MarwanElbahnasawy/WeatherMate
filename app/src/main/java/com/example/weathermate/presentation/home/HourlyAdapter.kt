@@ -2,7 +2,6 @@ package com.example.weathermate.presentation.home
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,10 +14,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weathermate.R
-import com.example.weathermate.databinding.ItemHourlyForecastBinding
 import com.example.weathermate.data.model.Hourly
-import com.example.weathermate.util.MyHelper
+import com.example.weathermate.databinding.ItemHourlyForecastBinding
 import com.example.weathermate.util.MyConverters
+import com.example.weathermate.util.MyHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -48,11 +47,11 @@ class HourlyAdapter(
     }
 
     lateinit var binding: ItemHourlyForecastBinding
-    lateinit var sharedPreferences: SharedPreferences
+    //lateinit var sharedPreferences: SharedPreferences
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HourlyViewHolder {
-        sharedPreferences = MyHelper.getSharedPreferencesInstance()
+        //sharedPreferences = MyHelper.getSharedPreferencesInstance()
         val inflater: LayoutInflater =
             parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 

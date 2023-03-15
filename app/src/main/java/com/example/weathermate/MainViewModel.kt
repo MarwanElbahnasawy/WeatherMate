@@ -1,16 +1,15 @@
 package com.example.weathermate
 
 import androidx.appcompat.app.AppCompatActivity
-import com.example.weathermate.alerts.view.AlertsManager
-import kotlinx.coroutines.launch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weathermate.data.Repository
+import com.example.weathermate.alerts.view.AlertsManager
+import com.example.weathermate.data.InterfaceRepository
+import kotlinx.coroutines.launch
 
-class MainViewModel(private val repository: Repository) : ViewModel() {
+class MainViewModel(private val repository: InterfaceRepository) : ViewModel() {
 
     private val TAG = "commonnn"
-
 
     fun activateAlerts(activity: AppCompatActivity) {
         val alertsManager = AlertsManager(activity)
@@ -35,10 +34,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         return repository.getBooleanFromSharedPreferences("isLayoutChangedBySettings", false)
     }
 
-    fun getLangaugeInSharedPreference(): String {
-        return repository.getStringFromSharedPreferences("language","")
-    }
-
     fun isThemeChangedBySettings(): Boolean {
         return repository.getBooleanFromSharedPreferences("isThemeChangedBySettings",false)
     }
@@ -46,9 +41,4 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     fun setIsThemeChangedBySettingsToFalse() {
         repository.putBooleanInSharedPreferences("isThemeChangedBySettings",false)
     }
-
-    fun isDark(): Boolean {
-        return repository.getBooleanFromSharedPreferences("isDarkTheme",false)
-    }
-
 }

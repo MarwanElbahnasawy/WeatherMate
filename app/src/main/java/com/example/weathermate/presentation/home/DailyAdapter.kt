@@ -1,7 +1,6 @@
 package com.example.weathermate.presentation.home
 import android.animation.ValueAnimator
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -14,10 +13,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weathermate.R
-import com.example.weathermate.databinding.ItemDailyForecastBinding
 import com.example.weathermate.data.model.Daily
-import com.example.weathermate.util.MyHelper
+import com.example.weathermate.databinding.ItemDailyForecastBinding
 import com.example.weathermate.util.MyConverters
+import com.example.weathermate.util.MyHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,10 +45,10 @@ class DailyAdapter(
     }
 
     lateinit var binding: ItemDailyForecastBinding
-    lateinit var sharedPreferences : SharedPreferences
+   // lateinit var sharedPreferences : SharedPreferences
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyViewHolder {
-        sharedPreferences = MyHelper.getSharedPreferencesInstance()
+       // sharedPreferences = MyHelper.getSharedPreferencesInstance()
         val inflater : LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = ItemDailyForecastBinding.inflate(inflater, parent, false)
         return DailyViewHolder(binding)

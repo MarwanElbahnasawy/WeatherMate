@@ -2,11 +2,10 @@ package com.example.weathermate.data.remote
 
 import android.content.Context
 import com.example.weathermate.R
-import com.example.weathermate.data.model.Alert
 import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.model.MapsAutoCompleteResponse
 
-class RemoteDataSource private constructor(context: Context) {
+class RemoteDataSource private constructor(context: Context) : InterfaceRemoteDataSource {
 
     private val mapsApiKey = context.resources.getString(R.string.google_maps_key)
     private val weatherApiKey = context.resources.getString(R.string.openweathermap_key)
@@ -27,24 +26,15 @@ class RemoteDataSource private constructor(context: Context) {
     private val weatherRetrofit = RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_WEATHER)
     private val weatherApiService = weatherRetrofit.create(ApiService::class.java)
 
-    suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String): WeatherData {
+    override suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String): WeatherData {
         return weatherApiService.getWeatherDataOnline(weatherApiKey, lat, lon, language)
-    }
-
-
-    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert>? {
-        return weatherApiService.getAlertsOnly("hourly,daily,current,minutely", weatherApiKey, lat, lon).alerts
     }
 
     private val mapRetrofit =
         RetrofitHelper.getRetrofitInstance(ApiService.BASE_URL_MAP_AUTOCOMPLETE)
     private val mapApiService = mapRetrofit.create(ApiService::class.java)
 
-    suspend fun getMapsAutoCompleteResponse(textInput: CharSequence?): MapsAutoCompleteResponse {
+    override suspend fun getMapsAutoCompleteResponse(textInput: CharSequence?): MapsAutoCompleteResponse {
         return mapApiService.getMapsAutoCompleteResponse(mapsApiKey, textInput)
     }
-
-
-
-
 }

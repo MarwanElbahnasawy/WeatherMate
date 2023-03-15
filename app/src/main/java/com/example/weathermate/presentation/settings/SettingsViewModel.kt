@@ -1,9 +1,9 @@
 package com.example.weathermate.presentation.settings
 
 import androidx.lifecycle.ViewModel
-import com.example.weathermate.data.Repository
+import com.example.weathermate.data.InterfaceRepository
 
-class SettingsViewModel(private val repository: Repository) : ViewModel() {
+class SettingsViewModel(private val repository: InterfaceRepository) : ViewModel() {
 
     private val TAG = "commonnn"
 

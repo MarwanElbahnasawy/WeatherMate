@@ -2,6 +2,7 @@ package com.example.weathermate.util
 
 import android.content.Context
 import androidx.room.TypeConverter
+import com.example.weathermate.MyApp
 import com.example.weathermate.R
 import com.example.weathermate.data.model.Alert
 import com.example.weathermate.data.model.Current
@@ -27,15 +28,15 @@ class MyConverters {
 
         fun convertTemperature(temp: Double, context: Context): String {
 
-                if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
-                    return when (MyHelper.getSharedPreferencesInstance().getString("temperature_unit", "")){
+                if (MyApp.getInstanceSharedPreferences().getString("language", "")=="english"){
+                    return when (MyApp.getInstanceSharedPreferences().getString("temperature_unit", "")){
                         "celsius" -> "${(kelvinToCelsius(temp).toInt().toString())} ${context.getString(R.string.celsiusUnit)}"
                         "fahrenheit" -> "${(kelvinToFahrenheit(temp).toInt().toString())} ${context.getString(R.string.fahrenheitUnit)}"
                         else -> "${((temp).toInt().toString())} ${context.getString(R.string.kelvinUnit)}"
 
                     }
                 } else{
-                    return when (MyHelper.getSharedPreferencesInstance().getString("temperature_unit", "")){
+                    return when (MyApp.getInstanceSharedPreferences().getString("temperature_unit", "")){
                         "celsius" -> "${convertToArabicNumber(kelvinToCelsius(temp).toInt().toString())} ${context.getString(R.string.celsiusUnit)}"
                         "fahrenheit" -> "${convertToArabicNumber(kelvinToFahrenheit(temp).toInt().toString())} ${context.getString(R.string.fahrenheitUnit)}"
                         else -> "${convertToArabicNumber((temp).toInt().toString())} ${context.getString(R.string.kelvinUnit)}"
@@ -45,13 +46,13 @@ class MyConverters {
         }
 
         fun convertWind(wind: Double, context: Context): String {
-            if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
-                return when (MyHelper.getSharedPreferencesInstance().getString("wind_speed_unit", "")){
+            if (MyApp.getInstanceSharedPreferences().getString("language", "")=="english"){
+                return when (MyApp.getInstanceSharedPreferences().getString("wind_speed_unit", "")){
                     "mph" -> "${(meterPerSecondToMilePerHour(wind).toInt().toString())} ${context.getString(R.string.mphUnit)}"
                     else -> "${((wind).toInt().toString())} ${context.getString(R.string.mpsUnit)}"
                 }
             } else{
-                return when (MyHelper.getSharedPreferencesInstance().getString("wind_speed_unit", "")){
+                return when (MyApp.getInstanceSharedPreferences().getString("wind_speed_unit", "")){
                     "mph" -> "${convertToArabicNumber(meterPerSecondToMilePerHour(wind).toInt().toString())} ${context.getString(R.string.mphUnit)}"
                     else -> "${convertToArabicNumber((wind).toInt().toString())} ${context.getString(R.string.mpsUnit)}"
                 }
@@ -60,7 +61,7 @@ class MyConverters {
         }
 
         fun convertHumidtyOrPressureOrTemperature(input: Int): String {
-            if (MyHelper.getSharedPreferencesInstance().getString("language", "")=="english"){
+            if (MyApp.getInstanceSharedPreferences().getString("language", "")=="english"){
                 return input.toString()
             } else{
                 return convertToArabicNumber(input.toString())

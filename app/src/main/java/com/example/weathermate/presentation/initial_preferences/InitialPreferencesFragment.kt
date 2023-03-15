@@ -19,7 +19,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
@@ -44,7 +43,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.*
-import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.util.*
 
 
@@ -552,7 +550,10 @@ class InitialPreferencesFragment : Fragment(), MapManagerInterface {
         configuration.setLocale(locale)
         resources?.updateConfiguration(configuration, resources.displayMetrics)
 
+        Log.i(TAG, "changeLanguageAndLayout: initial preferences")
+
         ViewCompat.setLayoutDirection(
+
             requireActivity().window.decorView,
             if (language == "ar") ViewCompat.LAYOUT_DIRECTION_RTL else ViewCompat.LAYOUT_DIRECTION_LTR
         )

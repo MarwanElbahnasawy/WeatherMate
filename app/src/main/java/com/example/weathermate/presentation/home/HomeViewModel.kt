@@ -2,8 +2,10 @@ package com.example.weathermate.presentation.home
 
 import android.content.Context
 import android.location.Geocoder
-import androidx.lifecycle.*
-import com.example.weathermate.data.Repository
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.weathermate.data.InterfaceRepository
 import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.remote.RetrofitStateWeather
 import com.example.weathermate.util.NetworkManager
@@ -14,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 
-class HomeViewModel(private val repository: Repository) : ViewModel() {
+class HomeViewModel(private val repository: InterfaceRepository) : ViewModel() {
 
     private val TAG = "commonnn"
 
@@ -137,3 +139,5 @@ class HomeViewModel(private val repository: Repository) : ViewModel() {
 
 
 }
+
+

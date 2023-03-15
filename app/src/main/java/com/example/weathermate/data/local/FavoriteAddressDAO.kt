@@ -1,6 +1,5 @@
 package com.example.weathermate.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.weathermate.data.model.FavoriteAddress
 
@@ -15,6 +14,4 @@ interface FavoriteAddressDAO {
     @Delete
     suspend fun deleteFavoriteAddress(address: FavoriteAddress)
 
-    @Query("DELETE FROM FavoriteAddressTable")
-    suspend fun deleteAllFavoriteAddresses()
 }

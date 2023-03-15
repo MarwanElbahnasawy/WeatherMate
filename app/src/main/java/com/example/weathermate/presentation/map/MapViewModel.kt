@@ -2,9 +2,9 @@ package com.example.weathermate.presentation.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weathermate.data.model.MapsAutoCompleteResponse
-import com.example.weathermate.data.Repository
+import com.example.weathermate.data.InterfaceRepository
 import com.example.weathermate.data.model.FavoriteAddress
+import com.example.weathermate.data.model.MapsAutoCompleteResponse
 import com.example.weathermate.data.remote.RetrofitStateWeather
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,18 +12,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class MapViewModel(private val repository: Repository) : ViewModel() {
+class MapViewModel(private val repository: InterfaceRepository) : ViewModel() {
 
     private  val TAG = "commonnn"
 
     val retrofitStateWeather = MutableStateFlow<RetrofitStateWeather>(RetrofitStateWeather.Loading)
-
-
-//    fun insertFavoriteAddress(favoriteAddress: FavoriteAddress) {
-//        viewModelScope.launch {
-//            repository.insertFavoriteAddress(favoriteAddress)
-//        }
-//    }
 
     fun insertFavoriteAddressInternetCall(
         latitudeDouble: Double,
@@ -73,6 +66,4 @@ class MapViewModel(private val repository: Repository) : ViewModel() {
             repository.insertFavoriteAddress(favoriteAddress)
         }
     }
-
-
 }

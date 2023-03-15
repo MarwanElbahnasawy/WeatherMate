@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -17,9 +16,9 @@ import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
 import com.example.weathermate.MyApp
 import com.example.weathermate.R
-import com.example.weathermate.databinding.FragmentFavoritesBinding
 import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.remote.RetrofitStateFavorites
+import com.example.weathermate.databinding.FragmentFavoritesBinding
 import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -101,7 +100,7 @@ class FavoritesFragment : Fragment() , InterfaceFavorites {
 
         val mlayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
 
-        favoritesAdapter = FavoritesAdapter(this, lifecycleScope)
+        favoritesAdapter = FavoritesAdapter(this)
 
         binding.rvFavorites.apply {
             layoutManager = mlayoutManager

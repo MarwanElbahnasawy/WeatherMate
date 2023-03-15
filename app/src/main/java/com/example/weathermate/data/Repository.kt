@@ -1,98 +1,74 @@
 package com.example.weathermate.data
 
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
-import com.example.weathermate.data.model.Alert
+import com.example.weathermate.data.local.InterfaceLocalDataSource
 import com.example.weathermate.data.model.AlertItem
 import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.model.WeatherData
 import com.example.weathermate.data.model.MapsAutoCompleteResponse
-import com.example.weathermate.data.local.LocalDataSource
-import com.example.weathermate.data.remote.RemoteDataSource
-import com.example.weathermate.util.MyHelper
+import com.example.weathermate.data.remote.InterfaceRemoteDataSource
 import kotlinx.coroutines.flow.flow
 
-class Repository (var localDataSource: LocalDataSource, var remoteDataSource: RemoteDataSource){
+class Repository (private val localDataSource: InterfaceLocalDataSource, private val remoteDataSource: InterfaceRemoteDataSource, private val sharedPreferences : SharedPreferences) :
+    InterfaceRepository {
 
-    private val sharedPreferences = MyHelper.getSharedPreferencesInstance()
     private val sharedPreferencesEditor = sharedPreferences.edit()
 
     //From Remote:
-
-    suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String) = flow {
+    override suspend fun getWeatherDataOnline(lat: Double, lon: Double, language: String) = flow {
         emit(remoteDataSource.getWeatherDataOnline(lat, lon, language))
     }
-
-    suspend fun getAlertsOnly(lat: Double, lon: Double): List<Alert>? {
-        return remoteDataSource.getAlertsOnly(lat, lon)
-    }
-
-    suspend fun getMapsAutoCompleteResponse(textInput: CharSequence?): MapsAutoCompleteResponse {
+    override suspend fun getMapsAutoCompleteResponse(textInput: CharSequence?): MapsAutoCompleteResponse {
         return remoteDataSource.getMapsAutoCompleteResponse(textInput)
     }
 
     //From Local
 
     //Weather
-
-    suspend fun getWeatherDataFromDB(): WeatherData?{
+    override suspend fun getWeatherDataFromDB(): WeatherData?{
         return localDataSource.getWeatherDataFromDB()
     }
-
-    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
+    override suspend fun insertOrUpdateWeatherData(weatherData: WeatherData) {
         localDataSource.insertOrUpdateWeatherData(weatherData)
     }
 
     //Favorites
-    fun getAllFavoriteAddresses(): List<FavoriteAddress> {
+    override fun getAllFavoriteAddresses(): List<FavoriteAddress> {
         return localDataSource.getAllFavoriteAddresses()
     }
-
-    suspend fun insertFavoriteAddress(address: FavoriteAddress){
+    override suspend fun insertFavoriteAddress(address: FavoriteAddress){
         localDataSource.insertFavoriteAddress(address)
     }
-
-    suspend fun deleteFavoriteAddress(address: FavoriteAddress){
+    override suspend fun deleteFavoriteAddress(address: FavoriteAddress){
         localDataSource.deleteFavoriteAddress(address)
     }
 
-    suspend fun deleteAllFavoriteAddresses(){
-        localDataSource.deleteAllFavoriteAddresses()
-    }
-
     //Alerts
-    fun getAllAlerts(): LiveData<List<AlertItem>> {
+    override fun getAllAlerts(): LiveData<List<AlertItem>> {
         return localDataSource.getAllAlerts()
     }
-
-    suspend fun findAlert(idInputLong: Long): AlertItem {
-        return localDataSource.findAlert(idInputLong)
-    }
-
-    suspend fun insertAlert(alert: AlertItem){
+    override suspend fun insertAlert(alert: AlertItem){
         localDataSource.insertAlert(alert)
     }
-
-    suspend fun deleteAlert(alert: AlertItem){
+    override suspend fun deleteAlert(alert: AlertItem){
         localDataSource.deleteAlert(alert)
     }
 
     // Shared preferences
-    fun putStringInSharedPreferences(key: String, stringInput: String){
+    override fun putStringInSharedPreferences(key: String, stringInput: String){
         sharedPreferencesEditor.putString(key, stringInput)
         sharedPreferencesEditor.apply()
     }
-
-    fun getStringFromSharedPreferences(key: String, stringDefault: String) : String{
+    override fun getStringFromSharedPreferences(key: String, stringDefault: String) : String{
         return sharedPreferences.getString(key, stringDefault)!!
     }
-
-    fun putBooleanInSharedPreferences(key: String, booleanInput: Boolean){
+    override fun putBooleanInSharedPreferences(key: String, booleanInput: Boolean){
         sharedPreferencesEditor.putBoolean(key, booleanInput)
         sharedPreferencesEditor.apply()
     }
-
-    fun getBooleanFromSharedPreferences(key: String, booleanDefault: Boolean): Boolean{
+    override fun getBooleanFromSharedPreferences(key: String, booleanDefault: Boolean): Boolean{
         return sharedPreferences.getBoolean(key, booleanDefault)
     }
 

@@ -306,10 +306,6 @@ class MapFragment : Fragment(), MapManagerInterface {
                 }
             }
         }
-/*        if(args.isFromSettings){
-            mapViewModel.putStringInSharedPreferences("latitude", latitudeDouble.toString())
-            mapViewModel.putStringInSharedPreferences("longitude", longitudeDouble.toString())
-        }*/
 
 
     }

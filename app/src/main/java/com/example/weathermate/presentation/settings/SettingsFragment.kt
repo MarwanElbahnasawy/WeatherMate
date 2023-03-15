@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,9 +23,9 @@ import com.example.weathermate.databinding.FragmentSettingsBinding
 import com.example.weathermate.presentation.map.MapManager
 import com.example.weathermate.presentation.map.MapManagerInterface
 import com.example.weathermate.util.NetworkManager
-import com.google.android.gms.location.*
-import com.google.android.gms.maps.GoogleMap
-import nl.joery.animatedbottombar.AnimatedBottomBar
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
 import java.util.*
 
 
@@ -157,6 +156,7 @@ class SettingsFragment : Fragment() , MapManagerInterface {
     private fun activateLanguageClickListener() {
 
         binding.btnEnglish.setOnClickListener {
+
             settingsViewModel.putStringInSharedPreferences("language", "english")
             binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
             binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))
@@ -165,6 +165,7 @@ class SettingsFragment : Fragment() , MapManagerInterface {
 
         }
         binding.btnArabic.setOnClickListener {
+
             settingsViewModel.putStringInSharedPreferences("language", "arabic")
             binding.btnArabic.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.myPurple))
             binding.btnEnglish.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.general_buttons_preferences_settings))

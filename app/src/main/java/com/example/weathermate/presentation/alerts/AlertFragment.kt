@@ -2,7 +2,6 @@ package com.example.weathermate.presentation.alerts
 
 
 import android.Manifest
-import android.app.AlarmManager
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -36,7 +35,6 @@ import com.example.weathermate.R
 import com.example.weathermate.alerts.view.AlertsManager
 import com.example.weathermate.data.model.AlertItem
 import com.example.weathermate.databinding.FragmentAlertBinding
-import com.example.weathermate.util.MyConverters
 import com.example.weathermate.util.NetworkManager
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat

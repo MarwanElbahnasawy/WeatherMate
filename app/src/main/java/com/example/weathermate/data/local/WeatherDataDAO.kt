@@ -1,6 +1,5 @@
 package com.example.weathermate.data.local
 
-import android.util.Log
 import androidx.room.*
 import com.example.weathermate.data.model.WeatherData
 

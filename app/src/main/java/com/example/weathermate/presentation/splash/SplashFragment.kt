@@ -1,17 +1,13 @@
 package com.example.weathermate.presentation.splash
 
 import android.animation.Animator
-import android.animation.ValueAnimator
-import android.net.ConnectivityManager
-import android.net.Network
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import android.widget.ViewAnimator
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
@@ -30,12 +26,11 @@ class SplashFragment : Fragment() {
     private lateinit var binding: FragmentSplashBinding
 
 
-
     private fun changeThemeOnStartup() {
         if (splashViewModel.isPreferencesSet()) {
-            if (splashViewModel.isDark()){
+            if (splashViewModel.isDark()) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else{
+            } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
@@ -47,7 +42,7 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val viewModelFactory = SplashViewModelFactory(MyApp.getInstanceRepository())
-        splashViewModel = ViewModelProvider(this,viewModelFactory)[SplashViewModel::class.java]
+        splashViewModel = ViewModelProvider(this, viewModelFactory)[SplashViewModel::class.java]
 
 
 
@@ -78,10 +73,10 @@ class SplashFragment : Fragment() {
                         .setPopUpTo(R.id.nav_graph, true)
                         .build()
 
-                    if(isAdded)
-                    findNavController().navigate(action, navOptions)
+                    if (isAdded)
+                        findNavController().navigate(action, navOptions)
 
-                } else{
+                } else {
                     val action =
                         SplashFragmentDirections.actionSplashFragmentToNavigationPreferences()
                     val navOptions = NavOptions.Builder()
@@ -99,8 +94,8 @@ class SplashFragment : Fragment() {
                             if (NetworkManager.isInternetConnected()) {
                                 toast.cancel()
 
-                                if(isAdded)
-                                findNavController().navigate(action, navOptions)
+                                if (isAdded)
+                                    findNavController().navigate(action, navOptions)
                                 break
                             } else {
                                 toast.show()

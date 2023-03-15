@@ -8,16 +8,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieDrawable
-import com.example.weathermate.databinding.ItemFavoriteBinding
 import com.example.weathermate.data.model.FavoriteAddress
-import com.example.weathermate.util.MyHelper
+import com.example.weathermate.databinding.ItemFavoriteBinding
 import com.example.weathermate.util.MyConverters
-import kotlinx.coroutines.CoroutineScope
+import com.example.weathermate.util.MyHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
-class FavoritesAdapter (private val interfaceFavorites: InterfaceFavorites,
-                        private val lifeCycleScopeInput: CoroutineScope
+class FavoritesAdapter (private val interfaceFavorites: InterfaceFavorites
 )
     : ListAdapter<FavoriteAddress, FavoritesAdapter.FavoriteViewHolder>(FavoriteDiffUtil()){
 

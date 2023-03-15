@@ -1,14 +1,13 @@
 package com.example.weathermate.presentation.alerts
 
-import android.app.AlarmManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weathermate.data.InterfaceRepository
 import com.example.weathermate.data.model.AlertItem
-import com.example.weathermate.data.Repository
 import kotlinx.coroutines.launch
 
-class AlertsViewModel(private val repository: Repository) : ViewModel(){
+class AlertsViewModel(private val repository: InterfaceRepository) : ViewModel(){
 
     fun insertAlert(alertItem: AlertItem) {
         viewModelScope.launch {
@@ -39,5 +38,4 @@ class AlertsViewModel(private val repository: Repository) : ViewModel(){
     fun getBooleanFromSharedPreferences(key: String, booleanDefault: Boolean): Boolean{
         return repository.getBooleanFromSharedPreferences(key, booleanDefault)
     }
-
 }

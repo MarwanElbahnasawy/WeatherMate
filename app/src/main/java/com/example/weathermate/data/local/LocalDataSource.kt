@@ -6,23 +6,19 @@ import com.example.weathermate.data.model.AlertItem
 import com.example.weathermate.data.model.FavoriteAddress
 import com.example.weathermate.data.model.WeatherData
 
-class LocalDataSource private constructor(context: Context) {
-
+class LocalDataSource private constructor(context: Context) : InterfaceLocalDataSource {
     private var weatherDataDAO: WeatherDataDAO
     private var favoriteAddressDAO: FavoriteAddressDAO
     private var alertsDAO: AlertsDAO
-
     init {
         val myDatabase = MyDatabase.getInstance(context.applicationContext)
         weatherDataDAO = myDatabase.getWeatherDataDAO()
         favoriteAddressDAO = myDatabase.getFavoriteAddressDAO()
         alertsDAO = myDatabase.getAlertsDAO()
     }
-
     companion object{
         @Volatile
         private var localDataSourceInstance: LocalDataSource? = null
-
         @Synchronized
         fun getInstance(context: Context): LocalDataSource {
             if(localDataSourceInstance == null){
@@ -31,49 +27,31 @@ class LocalDataSource private constructor(context: Context) {
             return localDataSourceInstance!!
         }
     }
-
     //Weather
-
-    suspend fun getWeatherDataFromDB(): WeatherData?{
+    override suspend fun getWeatherDataFromDB(): WeatherData?{
         return weatherDataDAO.getWeatherDataFromDB()
     }
-    suspend fun insertOrUpdateWeatherData(weatherData: WeatherData){
+    override suspend fun insertOrUpdateWeatherData(weatherData: WeatherData){
         weatherDataDAO.insertOrUpdateWeatherData(weatherData)
     }
-
-
     //Favorites
-    fun getAllFavoriteAddresses(): List<FavoriteAddress>{
+    override fun getAllFavoriteAddresses(): List<FavoriteAddress>{
         return favoriteAddressDAO.getAllFavoriteAddresses()
     }
-
-    suspend fun insertFavoriteAddress(address: FavoriteAddress){
+    override suspend fun insertFavoriteAddress(address: FavoriteAddress){
         favoriteAddressDAO.insertFavoriteAddress(address)
     }
-
-    suspend fun deleteFavoriteAddress(address: FavoriteAddress){
+    override suspend fun deleteFavoriteAddress(address: FavoriteAddress){
         favoriteAddressDAO.deleteFavoriteAddress(address)
     }
-
-    suspend fun deleteAllFavoriteAddresses(){
-        favoriteAddressDAO.deleteAllFavoriteAddresses()
-    }
-
     //Alerts
-    fun getAllAlerts(): LiveData<List<AlertItem>>{
+    override fun getAllAlerts(): LiveData<List<AlertItem>>{
         return alertsDAO.getAllAlerts()
     }
-
-    suspend fun findAlert(idInputLong: Long): AlertItem {
-        return alertsDAO.findAlert(idInputLong)
-    }
-
-    suspend fun insertAlert(alert: AlertItem){
+    override suspend fun insertAlert(alert: AlertItem){
         alertsDAO.insertAlert(alert)
     }
-
-    suspend fun deleteAlert(alert: AlertItem){
+    override suspend fun deleteAlert(alert: AlertItem){
         alertsDAO.deleteAlert(alert)
     }
-
 }

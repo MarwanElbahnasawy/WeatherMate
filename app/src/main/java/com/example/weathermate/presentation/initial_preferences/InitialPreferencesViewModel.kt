@@ -2,11 +2,11 @@ package com.example.weathermate.presentation.initial_preferences
 
 
 import androidx.lifecycle.ViewModel
+import com.example.weathermate.data.InterfaceRepository
 import com.example.weathermate.data.model.MapsAutoCompleteResponse
-import com.example.weathermate.data.Repository
 
 class InitialPreferencesViewModel(
-    private val repository: Repository
+    private val repository: InterfaceRepository
 ) : ViewModel() {
 
     fun putStringInSharedPreferences(key: String, stringInput: String) {

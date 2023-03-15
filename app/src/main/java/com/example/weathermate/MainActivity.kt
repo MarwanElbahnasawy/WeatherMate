@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -48,6 +47,9 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
 
     private fun checkIfThemeChangedBySettings() {
         if(mainViewModel.isThemeChangedBySettings()){
+
+            checkIfLayoutShouldBeEnglish()
+
             binding.bottomNavView.selectTabAt(3)
             mainViewModel.setIsThemeChangedBySettingsToFalse()
         }
@@ -61,17 +63,34 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
 
     private fun checkIfLayoutShouldBeArabic() {
         if (mainViewModel.isArabic() && !mainViewModel.isLayoutChangedBySettings()){
+
             val locale = Locale("ar")
+
             Locale.setDefault(locale)
             val configuration = Configuration()
             configuration.setLocale(locale)
             resources.updateConfiguration(configuration, resources.displayMetrics)
-            setTitlesOfNavBarToArabic()
-        } 
+            setTitlesOfNavBar()
+        }
         
         setUpNavBar()
         mainViewModel.putBooleanInSharedPreferences("isLayoutChangedBySettings", false)
     }
+
+    private fun checkIfLayoutShouldBeEnglish() {
+        if (!mainViewModel.isArabic()){
+
+            val locale = Locale("en")
+            Locale.setDefault(locale)
+            val configuration = Configuration()
+            configuration.setLocale(locale)
+            resources.updateConfiguration(configuration, resources.displayMetrics)
+            setTitlesOfNavBar()
+        }
+        setUpNavBar()
+        mainViewModel.putBooleanInSharedPreferences("isLayoutChangedBySettings", false)
+    }
+
     private fun initMainActivity() {
         navController = findNavController(R.id.nav_host_fragment)
         setBottomBarVisibility()
@@ -124,7 +143,7 @@ class MainActivity : AppCompatActivity() , NetworkManager.NetworkListener {
         }
     }
 
-    private fun setTitlesOfNavBarToArabic() {
+    private fun setTitlesOfNavBar() {
         for (i in 0..3) {
             binding.bottomNavView.removeTab(binding.bottomNavView.tabs[0])
         }
