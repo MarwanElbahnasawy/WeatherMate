@@ -65,6 +65,12 @@
    
 </p>
 
+<p align="center">
+   <img src="https://user-images.githubusercontent.com/96259021/225749571-0a70669b-1d4f-46b3-aa22-b0a3b6070692.jpg" alt="Build Status" width="300">
+    <img src="https://user-images.githubusercontent.com/96259021/225749575-4d980e29-82c5-4dc7-8df5-b7b6018f5104.jpg" alt="Build Status" width="300">
+   
+</p>
+
 ## Settings View
 
 <p align="center">
